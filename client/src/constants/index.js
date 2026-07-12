@@ -77,13 +77,51 @@ export const EXPENSE_CATEGORY = {
 
 // Navigation layout settings
 export const NAV_ITEMS = [
-  { path: '/', label: 'Dashboard', icon: 'LayoutDashboard' },
-  { path: '/vehicles', label: 'Vehicles', icon: 'Truck' },
-  { path: '/drivers', label: 'Drivers', icon: 'Users' },
-  { path: '/trips', label: 'Trips', icon: 'Route' },
-  { path: '/maintenance', label: 'Maintenance', icon: 'Wrench' },
-  { path: '/fuel', label: 'Fuel Registry', icon: 'Fuel' },
-  { path: '/expenses', label: 'Expenses', icon: 'DollarSign' },
-  { path: '/analytics', label: 'Analytics', icon: 'BarChart3' },
-  { path: '/settings', label: 'Settings', icon: 'Settings' },
+  { 
+    path: '/', 
+    label: 'Dashboard', 
+    icon: 'LayoutDashboard',
+    allowedRoles: ['admin', 'operator', 'driver']
+  },
+  {
+    label: 'Fleet Management',
+    icon: 'Truck',
+    allowedRoles: ['admin', 'operator', 'driver'],
+    children: [
+      { path: '/fleet/vehicles', label: 'Vehicles', icon: 'Truck', allowedRoles: ['admin', 'operator', 'driver'] },
+      { path: '/fleet/drivers', label: 'Drivers', icon: 'Users', allowedRoles: ['admin', 'operator'] },
+      { path: '/fleet/trips', label: 'Trips', icon: 'Route', allowedRoles: ['admin', 'operator', 'driver'] },
+    ]
+  },
+  { 
+    path: '/maintenance', 
+    label: 'Maintenance', 
+    icon: 'Wrench',
+    allowedRoles: ['admin', 'operator']
+  },
+  {
+    label: 'Fuel & Expenses',
+    icon: 'Fuel',
+    allowedRoles: ['admin', 'operator', 'driver'],
+    children: [
+      { path: '/fuel-expenses/fuel', label: 'Fuel Logs', icon: 'Fuel', allowedRoles: ['admin', 'operator', 'driver'] },
+      { path: '/fuel-expenses/expenses', label: 'Expenses', icon: 'DollarSign', allowedRoles: ['admin', 'operator'] },
+    ]
+  },
+  {
+    label: 'Analytics',
+    icon: 'BarChart3',
+    allowedRoles: ['admin', 'operator'],
+    children: [
+      { path: '/analytics/reports', label: 'Reports', icon: 'FileText', allowedRoles: ['admin', 'operator'] },
+      { path: '/analytics/charts', label: 'Charts', icon: 'AreaChart', allowedRoles: ['admin', 'operator'] },
+      { path: '/analytics/kpis', label: 'KPI Targets', icon: 'Target', allowedRoles: ['admin', 'operator'] },
+    ]
+  },
+  { 
+    path: '/settings', 
+    label: 'Settings', 
+    icon: 'Settings',
+    allowedRoles: ['admin', 'operator']
+  },
 ];
