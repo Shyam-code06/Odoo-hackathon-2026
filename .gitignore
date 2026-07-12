@@ -1,6 +1,7 @@
 # =========================
 # Dependencies
 # =========================
+node_modules/
 client/node_modules/
 server/node_modules/
 
@@ -22,7 +23,6 @@ server/generated/
 .env
 .env.*
 !.env.example
-
 client/.env
 client/.env.*
 !client/.env.example
@@ -108,3 +108,4 @@ temp/
 .vercel/
 .netlify/
 firebase-debug.log
+/generated/prisma
