@@ -3,11 +3,16 @@
     "target": "ES6",
     "module": "commonjs",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
+    "baseUrl": "http://localhost:3000/api/",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
     "jsx": "react-jsx"
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

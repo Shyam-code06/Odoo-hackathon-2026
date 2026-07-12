@@ -29,6 +29,16 @@ export const authService = {
     return response.data;
   },
 
+  register: async ({ email, password, name, role }) => {
+    if (USE_MOCK_DATA) {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      const newUser = { id: `usr-${Date.now()}`, email, name, role: role || 'FLEET_MANAGER' };
+      return { user: newUser, token: 'mock-token' };
+    }
+    const response = await axiosInstance.post('/auth/register', { email, password, name, role });
+    return response.data;
+  },
+
   logout: async () => {
     if (USE_MOCK_DATA) {
       await new Promise((resolve) => setTimeout(resolve, 200));
