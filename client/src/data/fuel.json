@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "f-1",
+    "vehicleId": "vh-1",
+    "vehicleName": "Volvo FH16 (TX-3902)",
+    "trip": "TRP-9901",
+    "gallons": 85,
+    "cost": 340,
+    "fuelType": "Diesel",
+    "date": "2026-07-11"
+  },
+  {
+    "id": "f-2",
+    "vehicleId": "vh-2",
+    "vehicleName": "Ford Transit (TX-1182)",
+    "trip": "TRP-9903",
+    "gallons": 24,
+    "cost": 96,
+    "fuelType": "Gasoline",
+    "date": "2026-07-09"
+  },
+  {
+    "id": "f-3",
+    "vehicleId": "vh-1",
+    "vehicleName": "Volvo FH16 (TX-3902)",
+    "trip": "TRP-9902",
+    "gallons": 90,
+    "cost": 360,
+    "fuelType": "Diesel",
+    "date": "2026-07-12"
+  }
+]

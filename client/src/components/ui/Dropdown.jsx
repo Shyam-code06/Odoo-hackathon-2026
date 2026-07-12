@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/utils';
 
@@ -11,21 +13,50 @@ export function Dropdown({
   ...props
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0, right: 0 });
   const containerRef = useRef(null);
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => {
+    if (!isOpen && containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+        right: rect.right + window.scrollX,
+        width: rect.width,
+      });
+    }
+    setIsOpen(!isOpen);
+  };
+
   const closeMenu = () => setIsOpen(false);
 
   // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
+        // Also check if click was on the portaled menu
+        const menuEl = document.getElementById('portal-dropdown-menu');
+        if (menuEl && menuEl.contains(event.target)) {
+          return;
+        }
         closeMenu();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Close dropdown on scroll to prevent alignment shift
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isOpen) {
+        closeMenu();
+      }
+    };
+    window.addEventListener('scroll', handleScroll, true);
+    return () => window.removeEventListener('scroll', handleScroll, true);
+  }, [isOpen]);
 
   return (
     <div 
@@ -40,16 +71,13 @@ export function Dropdown({
           return React.cloneElement(child, { onClick: toggleMenu, isOpen });
         }
         if (child.type === DropdownMenu) {
-          return React.cloneElement(child, { isOpen, onClose: closeMenu });
+          return React.cloneElement(child, { isOpen, onClose: closeMenu, coords });
         }
         return child;
       })}
     </div>
   );
 }
-
-// React import helper inside the component file to support React.Children
-import React from 'react';
 
 /**
  * Dropdown trigger button wrapper
@@ -64,7 +92,7 @@ export function DropdownTrigger({ children, onClick, isOpen, ...props }) {
 }
 
 /**
- * Dropdown Menu panel
+ * Dropdown Menu panel using React Portals
  */
 export function DropdownMenu({
   children,
@@ -72,21 +100,35 @@ export function DropdownMenu({
   onClose,
   align = 'right', // 'right' | 'left'
   className,
+  coords,
   ...props
 }) {
-  return (
+  const menuWidth = 160; // matches min-width
+
+  const style = {
+    position: 'absolute',
+    top: `${coords?.top || 0}px`,
+    left: align === 'right'
+      ? `${(coords?.right || 0) - menuWidth}px`
+      : `${coords?.left || 0}px`,
+    zIndex: 9999,
+  };
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          id="portal-dropdown-menu"
           initial={{ opacity: 0, scale: 0.95, y: 5 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 5 }}
           transition={{ duration: 0.15, ease: 'easeOut' }}
+          style={style}
           className={cn(
-            "absolute mt-2 bg-white border border-slate-200 rounded-xl shadow-premium-lg z-50 overflow-hidden min-w-[160px] py-1 text-left select-none",
-            align === 'right' ? 'right-0' : 'left-0',
+            "bg-white border border-slate-200 rounded-xl shadow-premium-lg overflow-hidden py-1 text-left select-none",
             className
           )}
+          style={{ ...style, minWidth: `${menuWidth}px` }}
           {...props}
         >
           <div onClick={onClose}>
@@ -94,7 +136,8 @@ export function DropdownMenu({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 

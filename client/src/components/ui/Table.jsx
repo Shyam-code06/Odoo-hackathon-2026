@@ -75,11 +75,15 @@ export function Table({
   }
 
   return (
-    <div className={cn("w-full bg-white border border-slate-200/80 rounded-2xl shadow-premium overflow-hidden select-none", className)}>
-      
+    <div
+      className={cn(
+        "w-full bg-white border border-slate-200/80 rounded-2xl shadow-premium overflow-visible select-none",
+        className,
+      )}
+    >
       {/* Dynamic Bulk Actions Drawer */}
       {selectable && selectedRowIds.length > 0 && bulkActions.length > 0 && (
-        <div className="flex items-center justify-between px-6 py-3 bg-brand-bg-secondary border-b border-subtle text-xs font-semibold text-slate-700 animate-slide-in">
+        <div className="flex items-center justify-between px-6 py-3 bg-brand-bg-secondary border-b border-subtle text-xs font-semibold text-slate-700 animate-slide-in ">
           <span>{selectedRowIds.length} row(s) selected</span>
           <div className="flex items-center gap-2">
             {bulkActions.map((action, index) => (
@@ -89,9 +93,9 @@ export function Table({
                 onClick={() => action.onClick(selectedRowIds)}
                 className={cn(
                   "px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer",
-                  action.variant === 'danger'
+                  action.variant === "danger"
                     ? "bg-brand-danger/10 text-brand-danger hover:bg-brand-danger hover:text-white"
-                    : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                    : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50",
                 )}
               >
                 {action.label}
@@ -105,10 +109,12 @@ export function Table({
       <div className="w-full overflow-x-auto">
         <table className="w-full text-left border-collapse">
           {/* Header */}
-          <thead className={cn(
-            "bg-slate-50 border-b border-subtle text-[10px] font-bold text-slate-450 uppercase tracking-wider select-none",
-            stickyHeader && "sticky top-0 z-10"
-          )}>
+          <thead
+            className={cn(
+              "bg-slate-50 border-b border-subtle text-[10px] font-bold text-slate-450 uppercase tracking-wider select-none",
+              stickyHeader && "sticky top-0 z-10",
+            )}
+          >
             <tr>
               {selectable && (
                 <th className="px-6 py-4 w-12 text-center">
@@ -122,28 +128,45 @@ export function Table({
               )}
               {columns.map((col) => {
                 const alignStyles = {
-                  left: 'text-left',
-                  right: 'text-right',
-                  center: 'text-center',
+                  left: "text-left",
+                  right: "text-right",
+                  center: "text-center",
                 };
                 const isSortedCol = sortKey === col.key;
-                
+
                 return (
                   <th
                     key={col.key}
-                    onClick={col.sortable ? () => handleSortClick(col.key) : undefined}
+                    onClick={
+                      col.sortable ? () => handleSortClick(col.key) : undefined
+                    }
                     className={cn(
                       "px-6 py-4 font-bold select-none",
-                      alignStyles[col.align || 'left'],
-                      col.sortable && "cursor-pointer hover:text-slate-800 transition-colors"
+                      alignStyles[col.align || "left"],
+                      col.sortable &&
+                        "cursor-pointer hover:text-slate-800 transition-colors",
                     )}
                   >
                     <div className="inline-flex items-center gap-1">
                       <span>{col.header}</span>
                       {col.sortable && (
                         <div className="flex flex-col text-slate-350">
-                          <ChevronUp className={cn("w-3 h-3 -mb-1", isSortedCol && sortDirection === 'asc' && "text-brand-primary")} />
-                          <ChevronDown className={cn("w-3 h-3", isSortedCol && sortDirection === 'desc' && "text-brand-primary")} />
+                          <ChevronUp
+                            className={cn(
+                              "w-3 h-3 -mb-1",
+                              isSortedCol &&
+                                sortDirection === "asc" &&
+                                "text-brand-primary",
+                            )}
+                          />
+                          <ChevronDown
+                            className={cn(
+                              "w-3 h-3",
+                              isSortedCol &&
+                                sortDirection === "desc" &&
+                                "text-brand-primary",
+                            )}
+                          />
                         </div>
                       )}
                     </div>
@@ -154,7 +177,7 @@ export function Table({
           </thead>
 
           {/* Body */}
-          <tbody className="divide-y divide-subtle text-xs text-slate-655 font-medium">
+          <tbody className="divide-y divide-subtle text-xs text-slate-655 font-medium overflow-y-visible">
             {data.map((row, index) => {
               const rowId = row.id || row._id || index;
               const isSelected = selectedRowIds.includes(rowId);
@@ -164,7 +187,7 @@ export function Table({
                   key={rowId}
                   className={cn(
                     "hover:bg-slate-50/50 transition-colors duration-150",
-                    isSelected && "bg-blue-50/15"
+                    isSelected && "bg-blue-50/15",
                   )}
                 >
                   {selectable && (
@@ -178,16 +201,20 @@ export function Table({
                   )}
                   {columns.map((col) => {
                     const alignStyles = {
-                      left: 'text-left',
-                      right: 'text-right',
-                      center: 'text-center',
+                      left: "text-left",
+                      right: "text-right",
+                      center: "text-center",
                     };
                     return (
                       <td
                         key={col.key}
-                        className={cn("px-6 py-3.5 truncate", alignStyles[col.align || 'left'])}
+                        className={cn(
+                          "px-6 py-3.5",
+                          col.key === 'actions' ? "overflow-visible" : "truncate",
+                          alignStyles[col.align || "left"],
+                        )}
                       >
-                        {col.render ? col.render(row) : (row[col.key] ?? '-')}
+                        {col.render ? col.render(row) : (row[col.key] ?? "-")}
                       </td>
                     );
                   })}

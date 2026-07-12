@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": "exp-1",
+    "expenseType": "Fuel Refill",
+    "vehicleName": "Volvo FH16 (TX-3902)",
+    "trip": "TRP-9901",
+    "amount": 340,
+    "category": "Fuel",
+    "date": "2026-07-11"
+  },
+  {
+    "id": "exp-2",
+    "expenseType": "Tire Rotation",
+    "vehicleName": "Scania R500 (TX-5509)",
+    "trip": "TRP-9904",
+    "amount": 280,
+    "category": "Maintenance",
+    "date": "2026-07-15"
+  },
+  {
+    "id": "exp-3",
+    "expenseType": "Road Toll TxTag",
+    "vehicleName": "Ford Transit (TX-1182)",
+    "trip": "TRP-9903",
+    "amount": 45,
+    "category": "Tolls",
+    "date": "2026-07-09"
+  }
+]

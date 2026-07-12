@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "m-1",
+    "vehicleId": "vh-1",
+    "vehicleName": "Volvo FH16 (TX-3902)",
+    "maintenanceType": "Engine Tune-up",
+    "description": "Standard 150,000-mile engine diagnostics, oil replacement, filters upgrade.",
+    "cost": 850,
+    "status": "completed",
+    "startDate": "2026-07-11",
+    "endDate": "2026-07-11"
+  },
+  {
+    "id": "m-2",
+    "vehicleId": "vh-2",
+    "vehicleName": "Ford Transit (TX-1182)",
+    "maintenanceType": "Brake Replacement",
+    "description": "Replenished rear drum and front brake pads; verified fluid line pressure.",
+    "cost": 420,
+    "status": "completed",
+    "startDate": "2026-07-09",
+    "endDate": "2026-07-09"
+  },
+  {
+    "id": "m-3",
+    "vehicleId": "vh-3",
+    "vehicleName": "Scania R500 (TX-5509)",
+    "maintenanceType": "Tire Rotation",
+    "description": "Rotated outer cargo tires; checked air pressure values.",
+    "cost": 280,
+    "status": "pending",
+    "startDate": "2026-07-15",
+    "endDate": null
+  }
+]
