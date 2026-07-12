@@ -11,6 +11,7 @@ export function Progress({
   className,
   variant = 'primary',
   size = 'md',
+  color, // Optional hex color override (e.g. '#F59E0B')
   ...props
 }) {
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
@@ -44,7 +45,8 @@ export function Progress({
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
-          className={cn("h-full rounded-full", colors[variant])}
+          className={cn("h-full rounded-full", !color && colors[variant])}
+          style={color ? { backgroundColor: color } : undefined}
         />
       </div>
     </div>

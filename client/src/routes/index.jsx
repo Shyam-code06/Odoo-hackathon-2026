@@ -1,147 +1,168 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedLayout from '@/layouts/ProtectedLayout';
 import PublicLayout from '@/layouts/PublicLayout';
 import RoleGuard from '@/routes/RoleGuard';
+import { PageLoader } from '@/components/ui/Loader';
 
-// Pages
+// ── Eagerly loaded (critical path) ─────────────────────────────────────────
 import Login from '@/pages/auth/Login';
 import Dashboard from '@/pages/dashboard/Dashboard';
-import Vehicles from '@/pages/vehicles/Vehicles';
-import Drivers from '@/pages/drivers/Drivers';
-import Trips from '@/pages/trips/Trips';
-import Maintenance from '@/pages/maintenance/Maintenance';
-import Fuel from '@/pages/fuel/Fuel';
-import Expenses from '@/pages/expenses/Expenses';
-import Reports from '@/pages/analytics/Reports';
-import Charts from '@/pages/analytics/Charts';
-import KPIs from '@/pages/analytics/KPIs';
-import Settings from '@/pages/settings/Settings';
-import Unauthorized from '@/pages/Unauthorized';
-import NotFound from '@/pages/NotFound';
 
-// Mapped Roles matching constant assignments
-const ROLES = {
-  ADMIN: 'admin',
-  OPERATOR: 'operator',
-  DRIVER: 'driver',
-};
+// ── Lazy loaded (route-based code splitting) ────────────────────────────────
+const Vehicles    = lazy(() => import('@/pages/vehicles/Vehicles'));
+const Drivers     = lazy(() => import('@/pages/drivers/Drivers'));
+const Trips       = lazy(() => import('@/pages/trips/Trips'));
+const Maintenance = lazy(() => import('@/pages/maintenance/Maintenance'));
+const Fuel        = lazy(() => import('@/pages/fuel/Fuel'));
+const Expenses    = lazy(() => import('@/pages/expenses/Expenses'));
+const Reports     = lazy(() => import('@/pages/analytics/Reports'));
+const Charts      = lazy(() => import('@/pages/analytics/Charts'));
+const KPIs        = lazy(() => import('@/pages/analytics/KPIs'));
+const Settings    = lazy(() => import('@/pages/settings/Settings'));
+const Profile     = lazy(() => import('@/pages/profile/Profile'));
+const Notifications = lazy(() => import('@/pages/notifications/Notifications'));
+const ServerError = lazy(() => import('@/pages/ServerError'));
+const NetworkError = lazy(() => import('@/pages/NetworkError'));
+const Unauthorized = lazy(() => import('@/pages/Unauthorized'));
+const NotFound    = lazy(() => import('@/pages/NotFound'));
+
+// All roles that can access protected sections
+const ALL_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'financial_analyst', 'admin', 'operator', 'driver'];
+const MANAGEMENT_ROLES = ['fleet_manager', 'dispatcher', 'admin', 'operator'];
+const ANALYTICS_ROLES  = ['fleet_manager', 'financial_analyst', 'dispatcher', 'admin', 'operator'];
+const FINANCE_ROLES    = ['fleet_manager', 'financial_analyst', 'admin', 'operator'];
+
+/** Route-level Suspense fallback */
+const SuspenseRoute = ({ children }) => (
+  <Suspense fallback={<PageLoader />}>{children}</Suspense>
+);
 
 /**
- * Global Routing Manager
+ * Global Application Routing Manager
+ * Architecture: Public → PublicLayout, Protected → ProtectedLayout + RoleGuard
+ * Code splitting: All non-critical pages are lazy-loaded for performance.
  */
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* ── Public Routes ────────────────────────────────────── */}
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/500"   element={<SuspenseRoute><ServerError /></SuspenseRoute>} />
+        <Route path="/network-error" element={<SuspenseRoute><NetworkError /></SuspenseRoute>} />
       </Route>
 
-      {/* Protected Routes (Dashboard / Operations shell) */}
+      {/* ── Protected Routes ─────────────────────────────────── */}
       <Route element={<ProtectedLayout />}>
+        {/* Dashboard (all roles) */}
         <Route path="/" element={<Dashboard />} />
-        
-        {/* Fleet Sub-section */}
-        <Route 
-          path="/fleet/vehicles" 
+
+        {/* Profile & Notifications (all authenticated) */}
+        <Route path="/profile" element={<SuspenseRoute><Profile /></SuspenseRoute>} />
+        <Route path="/notifications" element={<SuspenseRoute><Notifications /></SuspenseRoute>} />
+
+        {/* Fleet Management */}
+        <Route
+          path="/fleet/vehicles"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR, ROLES.DRIVER]}>
-              <Vehicles />
+            <RoleGuard allowedRoles={ALL_ROLES}>
+              <SuspenseRoute><Vehicles /></SuspenseRoute>
             </RoleGuard>
-          } 
+          }
         />
-        <Route 
-          path="/fleet/drivers" 
+        <Route
+          path="/fleet/drivers"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <Drivers />
+            <RoleGuard allowedRoles={MANAGEMENT_ROLES}>
+              <SuspenseRoute><Drivers /></SuspenseRoute>
             </RoleGuard>
-          } 
+          }
         />
-        <Route 
-          path="/fleet/trips" 
+        <Route
+          path="/fleet/trips"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR, ROLES.DRIVER]}>
-              <Trips />
+            <RoleGuard allowedRoles={ALL_ROLES}>
+              <SuspenseRoute><Trips /></SuspenseRoute>
             </RoleGuard>
-          } 
+          }
         />
 
-        {/* Maintenance Log */}
-        <Route 
-          path="/maintenance" 
+        {/* Maintenance */}
+        <Route
+          path="/maintenance"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <Maintenance />
+            <RoleGuard allowedRoles={MANAGEMENT_ROLES}>
+              <SuspenseRoute><Maintenance /></SuspenseRoute>
             </RoleGuard>
-          } 
+          }
         />
 
-        {/* Fuel & Expenses Sub-section */}
-        <Route 
-          path="/fuel-expenses/fuel" 
+        {/* Fuel & Expenses */}
+        <Route
+          path="/fuel-expenses/fuel"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR, ROLES.DRIVER]}>
-              <Fuel />
+            <RoleGuard allowedRoles={FINANCE_ROLES}>
+              <SuspenseRoute><Fuel /></SuspenseRoute>
             </RoleGuard>
-          } 
+          }
         />
-        <Route 
-          path="/fuel-expenses/expenses" 
+        <Route
+          path="/fuel-expenses/expenses"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <Expenses />
+            <RoleGuard allowedRoles={FINANCE_ROLES}>
+              <SuspenseRoute><Expenses /></SuspenseRoute>
             </RoleGuard>
-          } 
-        />
-
-        {/* Analytics Sub-section */}
-        <Route 
-          path="/analytics/reports" 
-          element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <Reports />
-            </RoleGuard>
-          } 
-        />
-        <Route 
-          path="/analytics/charts" 
-          element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <Charts />
-            </RoleGuard>
-          } 
-        />
-        <Route 
-          path="/analytics/kpis" 
-          element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <KPIs />
-            </RoleGuard>
-          } 
+          }
         />
 
-        {/* General Settings */}
-        <Route 
-          path="/settings" 
+        {/* Analytics */}
+        <Route
+          path="/analytics/reports"
           element={
-            <RoleGuard allowedRoles={[ROLES.ADMIN, ROLES.OPERATOR]}>
-              <Settings />
+            <RoleGuard allowedRoles={ANALYTICS_ROLES}>
+              <SuspenseRoute><Reports /></SuspenseRoute>
             </RoleGuard>
-          } 
+          }
+        />
+        <Route
+          path="/analytics/charts"
+          element={
+            <RoleGuard allowedRoles={ANALYTICS_ROLES}>
+              <SuspenseRoute><Charts /></SuspenseRoute>
+            </RoleGuard>
+          }
+        />
+        <Route
+          path="/analytics/kpis"
+          element={
+            <RoleGuard allowedRoles={ANALYTICS_ROLES}>
+              <SuspenseRoute><KPIs /></SuspenseRoute>
+            </RoleGuard>
+          }
         />
 
-        {/* Security redirection */}
-        <Route path="/unauthorized" element={<Unauthorized />} />
+        {/* Settings */}
+        <Route
+          path="/settings"
+          element={
+            <RoleGuard allowedRoles={MANAGEMENT_ROLES}>
+              <SuspenseRoute><Settings /></SuspenseRoute>
+            </RoleGuard>
+          }
+        />
 
-        {/* Fallbacks */}
-        <Route path="/fleet" element={<Navigate to="/fleet/vehicles" replace />} />
+        {/* Error & Security */}
+        <Route path="/unauthorized" element={<SuspenseRoute><Unauthorized /></SuspenseRoute>} />
+
+        {/* Section fallback redirects */}
+        <Route path="/fleet"         element={<Navigate to="/fleet/vehicles" replace />} />
         <Route path="/fuel-expenses" element={<Navigate to="/fuel-expenses/fuel" replace />} />
-        <Route path="/analytics" element={<Navigate to="/analytics/reports" replace />} />
+        <Route path="/analytics"     element={<Navigate to="/analytics/reports" replace />} />
       </Route>
 
-      {/* Wildcard 404 Route */}
-      <Route path="*" element={<NotFound />} />
+      {/* ── 404 Wildcard ─────────────────────────────────────── */}
+      <Route path="*" element={<SuspenseRoute><NotFound /></SuspenseRoute>} />
     </Routes>
   );
 }

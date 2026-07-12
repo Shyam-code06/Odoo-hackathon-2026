@@ -1,1 +1,107 @@
-{}
+{
+  "summary": {
+    "fleetUtilization": 78.4,
+    "fleetUtilizationTrend": 5.2,
+    "tripCompletionRate": 94.7,
+    "tripCompletionTrend": 2.1,
+    "fuelEfficiency": 8.3,
+    "fuelEfficiencyTrend": -1.4,
+    "totalRevenue": 284750,
+    "revenueTrend": 12.8,
+    "totalExpenses": 196320,
+    "expensesTrend": 7.3,
+    "netProfit": 88430,
+    "profitTrend": 22.1,
+    "roi": 45.1,
+    "roiTrend": 8.5,
+    "maintenanceCost": 42800,
+    "maintenanceTrend": -3.2
+  },
+  "monthlyRevenue": [
+    { "month": "Jan", "revenue": 18200, "expenses": 13400, "profit": 4800 },
+    { "month": "Feb", "revenue": 21500, "expenses": 14800, "profit": 6700 },
+    { "month": "Mar", "revenue": 19800, "expenses": 15200, "profit": 4600 },
+    { "month": "Apr", "revenue": 24300, "expenses": 16100, "profit": 8200 },
+    { "month": "May", "revenue": 26100, "expenses": 17400, "profit": 8700 },
+    { "month": "Jun", "revenue": 28400, "expenses": 18200, "profit": 10200 },
+    { "month": "Jul", "revenue": 31200, "expenses": 19800, "profit": 11400 },
+    { "month": "Aug", "revenue": 29700, "expenses": 18900, "profit": 10800 },
+    { "month": "Sep", "revenue": 33100, "expenses": 20400, "profit": 12700 },
+    { "month": "Oct", "revenue": 35800, "expenses": 22100, "profit": 13700 },
+    { "month": "Nov", "revenue": 38200, "expenses": 23200, "profit": 15000 },
+    { "month": "Dec", "revenue": 28450, "expenses": 16920, "profit": 11530 }
+  ],
+  "fuelConsumption": [
+    { "month": "Jan", "diesel": 12400, "petrol": 3200, "electric": 800 },
+    { "month": "Feb", "diesel": 11800, "petrol": 3100, "electric": 900 },
+    { "month": "Mar", "diesel": 13200, "petrol": 3400, "electric": 1100 },
+    { "month": "Apr", "diesel": 12900, "petrol": 3300, "electric": 1200 },
+    { "month": "May", "diesel": 14100, "petrol": 3600, "electric": 1400 },
+    { "month": "Jun", "diesel": 15200, "petrol": 3800, "electric": 1600 },
+    { "month": "Jul", "diesel": 14800, "petrol": 3700, "electric": 1500 },
+    { "month": "Aug", "diesel": 13600, "petrol": 3500, "electric": 1800 },
+    { "month": "Sep", "diesel": 15900, "petrol": 4100, "electric": 2100 },
+    { "month": "Oct", "diesel": 16200, "petrol": 4200, "electric": 2300 },
+    { "month": "Nov", "diesel": 17100, "petrol": 4400, "electric": 2500 },
+    { "month": "Dec", "diesel": 13500, "petrol": 3600, "electric": 2000 }
+  ],
+  "vehiclePerformance": [
+    { "type": "Heavy Trucks", "active": 24, "maintenance": 4, "idle": 2, "utilization": 83 },
+    { "type": "Delivery Vans", "active": 18, "maintenance": 2, "idle": 3, "utilization": 78 },
+    { "type": "Pickup Trucks", "active": 12, "maintenance": 1, "idle": 2, "utilization": 80 },
+    { "type": "Tankers", "active": 8, "maintenance": 2, "idle": 1, "utilization": 72 },
+    { "type": "Electric EVs", "active": 6, "maintenance": 0, "idle": 1, "utilization": 86 }
+  ],
+  "fleetUtilizationByMonth": [
+    { "month": "Jan", "utilization": 68 },
+    { "month": "Feb", "utilization": 72 },
+    { "month": "Mar", "utilization": 69 },
+    { "month": "Apr", "utilization": 74 },
+    { "month": "May", "utilization": 77 },
+    { "month": "Jun", "utilization": 80 },
+    { "month": "Jul", "utilization": 78 },
+    { "month": "Aug", "utilization": 76 },
+    { "month": "Sep", "utilization": 82 },
+    { "month": "Oct", "utilization": 84 },
+    { "month": "Nov", "utilization": 86 },
+    { "month": "Dec", "utilization": 81 }
+  ],
+  "tripStatus": [
+    { "name": "Completed", "value": 847, "color": "#16A34A" },
+    { "name": "In Transit", "value": 124, "color": "#2563EB" },
+    { "name": "Pending", "value": 67, "color": "#F59E0B" },
+    { "name": "Delayed", "value": 31, "color": "#DC2626" },
+    { "name": "Cancelled", "value": 18, "color": "#94A3B8" }
+  ],
+  "maintenanceCosts": [
+    { "month": "Jan", "scheduled": 2800, "emergency": 800, "preventive": 1200 },
+    { "month": "Feb", "scheduled": 3100, "emergency": 400, "preventive": 1400 },
+    { "month": "Mar", "scheduled": 2600, "emergency": 1200, "preventive": 1100 },
+    { "month": "Apr", "scheduled": 3400, "emergency": 600, "preventive": 1600 },
+    { "month": "May", "scheduled": 3200, "emergency": 900, "preventive": 1800 },
+    { "month": "Jun", "scheduled": 3800, "emergency": 500, "preventive": 2100 }
+  ],
+  "driverPerformance": [
+    { "name": "John Weber", "trips": 142, "onTime": 97, "fuelScore": 92, "safetyScore": 98, "rating": 4.9 },
+    { "name": "Maria Lopez", "trips": 128, "onTime": 94, "fuelScore": 88, "safetyScore": 95, "rating": 4.7 },
+    { "name": "Ahmed Karim", "trips": 115, "onTime": 89, "fuelScore": 91, "safetyScore": 93, "rating": 4.5 },
+    { "name": "Priya Sharma", "trips": 108, "onTime": 96, "fuelScore": 94, "safetyScore": 99, "rating": 4.8 },
+    { "name": "Tom Bradley", "trips": 98, "onTime": 82, "fuelScore": 79, "safetyScore": 88, "rating": 4.2 }
+  ],
+  "expensesByCategory": [
+    { "name": "Fuel", "value": 89400, "color": "#F59E0B" },
+    { "name": "Maintenance", "value": 42800, "color": "#DC2626" },
+    { "name": "Insurance", "value": 28600, "color": "#7C3AED" },
+    { "name": "Tolls", "value": 14200, "color": "#2563EB" },
+    { "name": "Salaries", "value": 18100, "color": "#16A34A" },
+    { "name": "Other", "value": 3220, "color": "#94A3B8" }
+  ],
+  "kpiTargets": [
+    { "metric": "Fleet Utilization", "current": 78.4, "target": 85, "unit": "%" },
+    { "metric": "Trip Completion Rate", "current": 94.7, "target": 98, "unit": "%" },
+    { "metric": "On-Time Delivery", "current": 87.3, "target": 95, "unit": "%" },
+    { "metric": "Fuel Efficiency", "current": 8.3, "target": 9.5, "unit": "km/L" },
+    { "metric": "Safety Score", "current": 94.1, "target": 99, "unit": "%" },
+    { "metric": "Maintenance Compliance", "current": 88.2, "target": 100, "unit": "%" }
+  ]
+}

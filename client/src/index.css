@@ -136,4 +136,91 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
+
+  /* Gradient text utility */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-brand-primary) 0%, var(--color-brand-purple) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-warm {
+    background: linear-gradient(135deg, var(--color-brand-secondary) 0%, var(--color-brand-danger) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Shimmer loading animation */
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .skeleton-shimmer {
+    background: linear-gradient(
+      90deg,
+      #f1f5f9 25%,
+      #e2e8f0 50%,
+      #f1f5f9 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Animated pulse indicator dot */
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.6; }
+  }
+
+  .pulse-dot {
+    animation: pulse-dot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Page-level entrance animation */
+  @keyframes page-enter {
+    from { opacity: 0; transform: translateY(8px) scale(0.995); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .page-enter {
+    animation: page-enter 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Chart tooltip shadow override */
+  .recharts-tooltip-wrapper {
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+  }
+
+  /* Premium focus ring */
+  .focus-ring {
+    outline: 2px solid var(--color-brand-primary);
+    outline-offset: 2px;
+  }
+
+  /* Stat card hover accent */
+  .stat-card-hover {
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .stat-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.12), 0 4px 8px -2px rgba(37, 99, 235, 0.06);
+  }
+
+  /* Sidebar active glow */
+  .nav-active-glow {
+    box-shadow: inset 3px 0 0 var(--color-brand-primary);
+  }
+
+  /* Glass card premium */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
 }
