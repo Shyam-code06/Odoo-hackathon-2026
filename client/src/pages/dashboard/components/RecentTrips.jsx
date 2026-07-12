@@ -16,8 +16,8 @@ export function RecentTrips() {
     const fetchTrips = async () => {
       try {
         const data = await tripService.getAll();
-        // Limit to recent 3 trips for dashboard summary
-        setTrips(data.slice(0, 3));
+        // Limit to recent 5 trips for dashboard summary
+        setTrips(data.slice(0, 5));
       } catch (err) {
         console.error('Failed to load trips in recent log widget:', err);
       } finally {
@@ -99,15 +99,15 @@ export function RecentTrips() {
   ];
 
   return (
-    <Card className="p-6 text-left border-slate-200/80 shadow-premium-sm flex flex-col justify-between select-none">
-      <div className="flex items-center justify-between border-b border-subtle pb-4 mb-4">
+    <Card className="p-6 lg:p-8 text-left border-slate-200/80 shadow-premium flex flex-col justify-between select-none">
+      <div className="flex items-center justify-between border-b border-subtle pb-5 mb-5">
         <div className="flex items-center gap-2">
-          <RouteIcon className="w-4 h-4 text-brand-primary" />
-          <h3 className="text-sm font-semibold text-slate-800 tracking-tight">Active Dispatches</h3>
+          <RouteIcon className="w-5 h-5 text-brand-primary" />
+          <h3 className="text-lg font-bold text-slate-800 tracking-tight">Active Dispatches</h3>
         </div>
         <button
           onClick={() => navigate('/fleet/trips')}
-          className="text-[10px] font-bold text-brand-primary hover:underline cursor-pointer"
+          className="text-xs font-bold text-brand-primary hover:underline cursor-pointer"
         >
           View All Trips
         </button>
@@ -118,6 +118,7 @@ export function RecentTrips() {
           columns={columns}
           data={trips}
           isLoading={isLoading}
+          className="[&_th]:text-xs [&_th]:lg:text-sm [&_td]:text-sm [&_th]:py-5 [&_td]:py-5"
           emptyTitle="No active dispatches"
           emptyDescription="All vehicles are currently idle at terminal depots."
         />

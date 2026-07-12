@@ -135,9 +135,9 @@ export function Charts() {
                     <stop offset="95%" stopColor={CHART_COLORS.primary} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="revenue" name="Revenue" stroke={CHART_COLORS.primary} strokeWidth={2.5} fill="url(#chartGradBlue)" />
               </AreaChart>
@@ -153,9 +153,9 @@ export function Charts() {
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={(data?.fuelConsumption || []).slice(0, 6)} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend wrapperStyle={{ fontSize: 11, fontWeight: 600 }} />
                 <Bar dataKey="diesel" name="Diesel" fill={CHART_COLORS.warning} radius={[4, 4, 0, 0]} maxBarSize={18} />
@@ -204,9 +204,9 @@ export function Charts() {
           >
             <ResponsiveContainer width="100%" height={240}>
               <RadarChart data={radarData} margin={{ top: 4, right: 16, left: 16, bottom: 4 }}>
-                <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: '#64748b', fontWeight: 600 }} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8, fill: '#94a3b8' }} />
+                <PolarGrid stroke="var(--color-slate-200)" />
+                <PolarAngleAxis dataKey="metric" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8, fill: 'var(--color-slate-400)' }} />
                 <Radar
                   name="Current Period"
                   dataKey="value"
@@ -232,9 +232,9 @@ export function Charts() {
             >
               <ResponsiveContainer width="100%" height={260}>
                 <ComposedChart data={data?.monthlyRevenue || []} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                  <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: 'var(--color-slate-500)' }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v / 1000}k`} />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend wrapperStyle={{ fontSize: 11, fontWeight: 600 }} />
                   <Bar dataKey="revenue" name="Revenue" fill={CHART_COLORS.primary} radius={[4, 4, 0, 0]} maxBarSize={30} opacity={0.7} />

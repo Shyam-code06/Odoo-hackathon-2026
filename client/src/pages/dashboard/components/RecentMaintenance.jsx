@@ -7,15 +7,15 @@ export function RecentMaintenance({ data }) {
   const navigate = useNavigate();
 
   return (
-    <Card className="p-6 text-left border-slate-200/80 shadow-premium-sm flex flex-col select-none">
-      <div className="flex items-center justify-between border-b border-subtle pb-4 mb-4">
+    <Card className="p-6 lg:p-8 text-left border-slate-200/80 shadow-premium flex flex-col select-none">
+      <div className="flex items-center justify-between border-b border-subtle pb-5 mb-5">
         <div className="flex items-center gap-2">
-          <Wrench className="w-4 h-4 text-brand-primary" />
-          <h3 className="text-sm font-semibold text-slate-800 tracking-tight">Active Maintenance</h3>
+          <Wrench className="w-5 h-5 text-brand-primary" />
+          <h3 className="text-lg font-bold text-slate-800 tracking-tight">Active Maintenance</h3>
         </div>
         <button
           onClick={() => navigate('/maintenance')}
-          className="text-[10px] font-bold text-brand-primary hover:underline cursor-pointer"
+          className="text-xs font-bold text-brand-primary hover:underline cursor-pointer"
         >
           View Log Registry
         </button>
@@ -26,34 +26,34 @@ export function RecentMaintenance({ data }) {
           data.map((item) => (
             <div
               key={item.id}
-              className="p-3 border border-slate-200/60 hover:border-slate-300 rounded-xl transition-all duration-200 hover:-translate-y-0.5 flex items-start justify-between gap-3 bg-slate-50/40"
+              className="p-4 border border-slate-200/60 hover:border-slate-300 rounded-xl transition-all duration-200 hover:-translate-y-0.5 flex items-start justify-between gap-4 bg-slate-50/40"
             >
-              <div className="space-y-1.5 min-w-0">
-                <p className="text-xs font-bold text-slate-800 truncate">{item.vehicle}</p>
-                <div className="flex items-center gap-2 text-[10px] text-slate-450 font-semibold">
+              <div className="space-y-2 min-w-0">
+                <p className="text-sm font-bold text-slate-800 truncate">{item.vehicle}</p>
+                <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold">
                   <span className="truncate">{item.type}</span>
                   <span className="text-slate-300">•</span>
-                  <span className="flex items-center gap-0.5 shrink-0">
-                    <Calendar className="w-3 h-3" />
+                  <span className="flex items-center gap-1 shrink-0">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
                     {item.date}
                   </span>
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-1.5 shrink-0 text-right">
-                <span className="text-xs font-extrabold text-slate-800">
+              <div className="flex flex-col items-end gap-2 shrink-0 text-right">
+                <span className="text-sm font-extrabold text-slate-800">
                   ${item.cost.toLocaleString()}
                 </span>
                 <Badge
                   variant={item.status === 'completed' ? 'success' : 'warning'}
                   size="sm"
-                  className="py-0.5 px-1.5 text-[9px] font-bold"
+                  className="py-0.5 px-2 text-[10px] font-bold"
                 >
                   <span className="flex items-center gap-1">
                     {item.status === 'completed' ? (
-                      <CheckCircle2 className="w-2.5 h-2.5" />
+                      <CheckCircle2 className="w-3 h-3" />
                     ) : (
-                      <Clock className="w-2.5 h-2.5" />
+                      <Clock className="w-3.5 h-3.5" />
                     )}
                     {item.status.toUpperCase()}
                   </span>

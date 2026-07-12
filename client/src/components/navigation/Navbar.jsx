@@ -10,6 +10,7 @@ import { GlobalSearch } from '@/components/ui/GlobalSearch';
 import { Badge } from '@/components/ui/Badge';
 import { Avatar } from '@/components/ui/Avatar';
 import { USER_ROLE_LABELS } from '@/constants';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Navbar() {
   const { pathname } = useLocation();
@@ -112,6 +113,9 @@ export function Navbar() {
               ⌘K
             </kbd>
           </button>
+
+          {/* Theme Toggle */}
+          <ThemeToggle />
 
           {/* Notification Bell */}
           <NotificationDropdown />

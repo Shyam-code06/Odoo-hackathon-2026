@@ -93,41 +93,41 @@ function KPICard({
 
   return (
     <Card className={cn(
-      "p-5 flex flex-col justify-between min-h-[142px] transition-all duration-300 hover:-translate-y-0.5 select-none border-slate-200/80 shadow-premium-sm",
+      "p-6 lg:p-7 flex flex-col justify-between min-h-[160px] transition-all duration-300 hover:-translate-y-1 select-none border-slate-200/80 shadow-premium-sm hover:shadow-premium",
       glows[variant]
     )}>
       {/* Top Header */}
       <div className="flex items-center justify-between gap-3">
-        <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider">
+        <span className="text-xs lg:text-sm font-semibold text-slate-500 uppercase tracking-wider">
           {title}
         </span>
         <div className={cn(
-          "w-8 h-8 rounded-xl flex items-center justify-center border",
+          "w-10 h-10 rounded-xl flex items-center justify-center border",
           variant === 'blue' && 'bg-blue-50/60 border-blue-100 text-blue-600',
           variant === 'emerald' && 'bg-emerald-50/60 border-emerald-100 text-emerald-600',
           variant === 'rose' && 'bg-rose-50/60 border-rose-100 text-rose-600',
           variant === 'purple' && 'bg-purple-50/60 border-purple-100 text-purple-600',
           variant === 'amber' && 'bg-amber-50/60 border-amber-100 text-amber-600'
         )}>
-          <Icon className="w-4 h-4" />
+          <Icon className="w-5 h-5" />
         </div>
       </div>
 
       {/* Middle Value & Trend */}
-      <div className="flex items-end justify-between mt-3 gap-2">
-        <div className="space-y-1 text-left">
-          <span className="text-xl font-extrabold text-slate-850 tracking-tight leading-none">
+      <div className="flex items-end justify-between mt-4 gap-2">
+        <div className="space-y-1.5 text-left">
+          <span className="text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-tight leading-none">
             {value}
           </span>
-          <div className="flex items-center gap-1.5 mt-1 select-none">
+          <div className="flex items-center gap-1.5 mt-2 select-none">
             <Badge 
               variant={status === 'up' ? 'success' : status === 'down' ? 'danger' : 'neutral'} 
               size="sm"
-              className="text-[9px] font-bold py-0.5 px-1.5"
+              className="text-[10px] font-bold py-0.5 px-2"
             >
               {status === 'up' ? '+' : status === 'down' ? '-' : ''}{trend}%
             </Badge>
-            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">
               VS LAST MONTH
             </span>
           </div>
@@ -251,70 +251,54 @@ export function DashboardStats({ stats }) {
     },
   ];
 
+  const executiveKPIs = [
+    {
+      title: "Fleet Utilization",
+      value: `${stats.fleetUtilization?.value || 0}%`,
+      trend: stats.fleetUtilization?.trend || 0,
+      status: stats.fleetUtilization?.status || 'neutral',
+      icon: "Percent",
+      variant: "purple",
+    },
+    {
+      title: "Active Trips",
+      value: stats.activeTrips?.value || 0,
+      trend: stats.activeTrips?.trend || 0,
+      status: stats.activeTrips?.status || 'neutral',
+      icon: "Route",
+      variant: "blue",
+    },
+    {
+      title: "Operational Cost",
+      value: formatCurrency(stats.operationalCost?.value || 0),
+      trend: stats.operationalCost?.trend || 0,
+      status: stats.operationalCost?.status || 'neutral',
+      icon: "DollarSign",
+      variant: "emerald",
+    },
+    {
+      title: "Vehicles In Shop",
+      value: stats.vehiclesInShop?.value || 0,
+      trend: stats.vehiclesInShop?.trend || 0,
+      status: stats.vehiclesInShop?.status || 'neutral',
+      icon: "Wrench",
+      variant: "rose",
+    },
+  ];
+
   return (
-    <div className="space-y-8 select-none">
-      {/* 1. Fleet Vehicle Telemetry Group */}
-      <div className="space-y-4">
-        <SectionHeader 
-          title="Vehicle Asset Telemetry" 
-          description="Status of physical assets, trailers, and vans registered in the active fleet registry."
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 select-none">
+      {executiveKPIs.map((kpi, idx) => (
+        <KPICard
+          key={idx}
+          title={kpi.title}
+          value={kpi.value}
+          trend={kpi.trend}
+          status={kpi.status}
+          icon={kpi.icon}
+          variant={kpi.variant}
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {vehicleKPIs.map((kpi, idx) => (
-            <KPICard
-              key={idx}
-              title={kpi.title}
-              value={kpi.value}
-              trend={kpi.trend}
-              status={kpi.status}
-              icon={kpi.icon}
-              variant={kpi.variant}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 2. Operator & Dispatch Logs Group */}
-      <div className="space-y-4">
-        <SectionHeader 
-          title="Operator & Dispatch Logs" 
-          description="Real-time CDL driver availability and active load trip dispatches in transit."
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {operatorKPIs.map((kpi, idx) => (
-            <KPICard
-              key={idx}
-              title={kpi.title}
-              value={kpi.value}
-              trend={kpi.trend}
-              status={kpi.status}
-              icon={kpi.icon}
-              variant={kpi.variant}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Fleet Expenditures & Utilization Group */}
-      <div className="space-y-4">
-        <SectionHeader 
-          title="Fleet Expenditures & Performance" 
-          description="Monthly diesel expenditures, repair invoice costs, and overall fleet usage efficiency."
-        />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {financialKPIs.map((kpi, idx) => (
-            <KPICard
-              key={idx}
-              title={kpi.title}
-              value={kpi.value}
-              trend={kpi.trend}
-              status={kpi.status}
-              icon={kpi.icon}
-              variant={kpi.variant}
-            />
-          ))}
-        </div>
-      </div>
+      ))}
     </div>
   );
 }

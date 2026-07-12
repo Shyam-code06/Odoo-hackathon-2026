@@ -26,11 +26,11 @@ export function DashboardHeader({ onRefresh, isRefreshing, onExport, isExporting
   return (
     <div className="flex flex-col gap-5 border-b border-subtle pb-6 text-left select-none">
       {/* Top row: Title and primary buttons */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Operations Command</h1>
-          <p className="text-xs text-slate-400 mt-1 font-semibold flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-slate-450" />
+          <h1 className="text-3xl lg:text-4xl font-extrabold text-slate-800 tracking-tight">Operations Command</h1>
+          <p className="text-sm text-slate-550 mt-2 font-medium flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-slate-450" />
             Active telemetry for {dayjs().format('MMMM DD, YYYY')}
           </p>
         </div>

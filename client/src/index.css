@@ -1,28 +1,80 @@
 @import "tailwindcss";
 
+:root {
+  --brand-bg: #F5F7FA;
+  --brand-bg-secondary: #EEF2F7;
+  --brand-card: #FFFFFF;
+  --brand-sidebar: #1F2937;
+  --brand-primary: #2563EB;
+  --brand-secondary: #F59E0B;
+  --brand-success: #16A34A;
+  --brand-danger: #DC2626;
+  --brand-purple: #7C3AED;
+
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+
+  --skeleton-bg-start: #f1f5f9;
+  --skeleton-bg-middle: #e2e8f0;
+}
+
+.dark {
+  --brand-bg: #0F172A;
+  --brand-bg-secondary: #1E293B;
+  --brand-card: #1E293B;
+  --brand-sidebar: #111827;
+  --brand-primary: #3B82F6;
+  --brand-secondary: #F59E0B;
+  --brand-success: #10B981;
+  --brand-danger: #EF4444;
+  --brand-purple: #8B5CF6;
+
+  --slate-50: #0f172a;
+  --slate-100: #1e293b;
+  --slate-200: #334155;
+  --slate-300: #475569;
+  --slate-400: #64748b;
+  --slate-500: #94a3b8;
+  --slate-600: #cbd5e1;
+  --slate-700: #e2e8f0;
+  --slate-800: #f8fafc;
+  --slate-900: #ffffff;
+
+  --skeleton-bg-start: #1e293b;
+  --skeleton-bg-middle: #334155;
+}
+
 @theme {
   /* Brand color palette overrides and definitions */
-  --color-brand-bg: #F5F7FA;
-  --color-brand-bg-secondary: #EEF2F7;
-  --color-brand-card: #FFFFFF;
-  --color-brand-sidebar: #1F2937;
-  --color-brand-primary: #2563EB;
-  --color-brand-secondary: #F59E0B;
-  --color-brand-success: #16A34A;
-  --color-brand-danger: #DC2626;
-  --color-brand-purple: #7C3AED;
+  --color-brand-bg: var(--brand-bg);
+  --color-brand-bg-secondary: var(--brand-bg-secondary);
+  --color-brand-card: var(--brand-card);
+  --color-brand-sidebar: var(--brand-sidebar);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-success: var(--brand-success);
+  --color-brand-danger: var(--brand-danger);
+  --color-brand-purple: var(--brand-purple);
 
   /* Neutral palette tweaks for enterprise SaaS dashboard */
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-400: #94a3b8;
-  --color-slate-500: #64748b;
-  --color-slate-600: #475569;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
+  --color-slate-50: var(--slate-50);
+  --color-slate-100: var(--slate-100);
+  --color-slate-200: var(--slate-200);
+  --color-slate-300: var(--slate-300);
+  --color-slate-400: var(--slate-400);
+  --color-slate-500: var(--slate-500);
+  --color-slate-600: var(--slate-600);
+  --color-slate-700: var(--slate-700);
+  --color-slate-800: var(--slate-800);
+  --color-slate-900: var(--slate-900);
 
   /* Typography scale */
   --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -46,9 +98,12 @@
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
+/* Redefine dark variant for class selector in Tailwind v4 */
+@variant dark (.dark &);
+
 /* Global resets and typography optimization */
 @layer base {
-  html {
+  html, body {
     scroll-behavior: smooth;
     background-color: var(--color-brand-bg);
     color: var(--color-slate-800);
@@ -56,10 +111,11 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Smooth theme transitions */
+    transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   body {
-    background-color: var(--color-brand-bg);
     min-height: 100vh;
     overflow-x: hidden;
   }
@@ -106,6 +162,11 @@
     border: 1px solid rgba(255, 255, 255, 0.6);
   }
 
+  .dark .glass-panel {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
   .glass-panel-dark {
     background: rgba(31, 41, 55, 0.85);
     backdrop-filter: blur(16px);
@@ -125,7 +186,7 @@
 
   /* Subtle border style */
   .border-subtle {
-    border-color: #EEF2F7;
+    border-color: var(--color-slate-200);
   }
 
   /* Truncated container layout widths */
@@ -161,9 +222,9 @@
   .skeleton-shimmer {
     background: linear-gradient(
       90deg,
-      #f1f5f9 25%,
-      #e2e8f0 50%,
-      #f1f5f9 75%
+      var(--skeleton-bg-start) 25%,
+      var(--skeleton-bg-middle) 50%,
+      var(--skeleton-bg-start) 75%
     );
     background-size: 200% 100%;
     animation: shimmer 1.8s ease-in-out infinite;
@@ -222,5 +283,72 @@
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.7);
     box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+
+  .dark .glass-card {
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DARK MODE SELECTOR ACCENT OVERRIDES
+   ───────────────────────────────────────────────────────────────────────────── */
+.dark {
+  /* Override bg-white utilities inside dark mode specifically for containers/cards/inputs */
+  .bg-white, 
+  .bg-brand-card {
+    background-color: var(--brand-card) !important;
+  }
+
+  /* Override shadow-premium in dark mode to be softer and darker */
+  .shadow-premium,
+  .shadow-premium-sm,
+  .shadow-premium-md,
+  .shadow-premium-lg,
+  .shadow-premium-xl {
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  /* Input placeholders */
+  ::placeholder,
+  .placeholder-slate-400 {
+    color: var(--color-slate-400) !important;
+  }
+
+  /* Text color corrections for forms and inputs */
+  input, 
+  select, 
+  textarea {
+    color: var(--color-slate-800) !important;
+    background-color: var(--brand-card) !important;
+    border-color: var(--color-slate-200) !important;
+  }
+
+  input:focus, 
+  select:focus, 
+  textarea:focus {
+    border-color: var(--color-brand-primary) !important;
+  }
+
+  /* Sidebar styling */
+  aside,
+  .bg-brand-sidebar {
+    background-color: var(--brand-sidebar) !important;
+    border-right: 1px solid var(--color-slate-200) !important;
+  }
+
+  /* Table styling */
+  thead {
+    background-color: var(--color-slate-50) !important;
+  }
+  tr:hover {
+    background-color: rgba(255, 255, 255, 0.02) !important;
+  }
+
+  /* Toast override shadow */
+  .toast {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5) !important;
   }
 }

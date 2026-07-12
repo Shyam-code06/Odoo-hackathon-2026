@@ -323,9 +323,9 @@ export function Reports() {
                     <stop offset="95%" stopColor={CHART_COLORS.danger} stopOpacity={0.01} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
                 <Tooltip content={<CustomTooltip prefix="$" />} />
                 <Legend wrapperStyle={{ fontSize: 11, fontWeight: 600 }} />
                 <Area type="monotone" dataKey="revenue" name="Revenue" stroke={CHART_COLORS.primary} strokeWidth={2.5} fill="url(#gradRevenue)" />
@@ -344,9 +344,9 @@ export function Reports() {
           >
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={data?.fleetUtilizationByMonth || []} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis domain={[50, 100]} tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis domain={[50, 100]} tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${v}%`} />
                 <Tooltip content={<CustomTooltip suffix="%" />} />
                 <Line
                   type="monotone"
@@ -375,9 +375,9 @@ export function Reports() {
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={fuelData} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k L`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k L`} />
                 <Tooltip content={<CustomTooltip suffix=" L" />} />
                 <Legend wrapperStyle={{ fontSize: 11, fontWeight: 600 }} />
                 {(fuelType === 'all' || fuelType === 'diesel') && <Bar dataKey="diesel" name="Diesel" fill={CHART_COLORS.warning} radius={[3, 3, 0, 0]} maxBarSize={28} />}
@@ -466,9 +466,9 @@ export function Reports() {
           >
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={data?.maintenanceCosts || []} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-slate-200)" />
+                <XAxis dataKey="month" tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 10, fill: 'var(--color-slate-500)', fontWeight: 600 }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(1)}k`} />
                 <Tooltip content={<CustomTooltip prefix="$" />} />
                 <Legend wrapperStyle={{ fontSize: 11, fontWeight: 600 }} />
                 <Bar dataKey="scheduled" name="Scheduled" fill={CHART_COLORS.primary} radius={[3, 3, 0, 0]} maxBarSize={20} stackId="a" />

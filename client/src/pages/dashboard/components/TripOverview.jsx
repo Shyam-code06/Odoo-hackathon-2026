@@ -79,20 +79,20 @@ export function TripOverview({ data, isLoading, onRefresh }) {
           <CartesianGrid 
             strokeDasharray="3 3" 
             vertical={false} 
-            stroke="#F1F5F9" 
+            stroke="var(--color-slate-200)" 
           />
           
           <XAxis 
             dataKey="name" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 600 }} 
+            tick={{ fill: 'var(--color-slate-500)', fontSize: 10, fontWeight: 600 }} 
           />
           
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 600 }} 
+            tick={{ fill: 'var(--color-slate-500)', fontSize: 10, fontWeight: 600 }} 
           />
           
           <Tooltip content={<CustomTooltip />} />
