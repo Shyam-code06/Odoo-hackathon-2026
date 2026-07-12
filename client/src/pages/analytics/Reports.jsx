@@ -106,8 +106,19 @@ export function Reports() {
     fetchData();
   }, [fetchData]);
 
-  const handleExport = () => {
-    toast.success('Report exported as CSV', { icon: '📊' });
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const filename = await analyticsService.export('csv');
+      toast.success(`Analytics report exported successfully: ${filename}`, { icon: '📊' });
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export analytics report.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleRefresh = () => {
@@ -167,6 +178,7 @@ export function Reports() {
               variant="primary"
               size="sm"
               leftIcon={Download}
+              isLoading={isExporting}
               onClick={handleExport}
             >
               Export CSV

@@ -70,6 +70,20 @@ export function CrudPage({
   // Pagination local state
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const filename = await service.export('csv');
+      toast.success(`${title} logs exported successfully: ${filename}`);
+    } catch (err) {
+      console.error(err);
+      toast.error(`Failed to export ${title.toLowerCase()} logs.`);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // 1. Debounce Search queries
   useEffect(() => {
@@ -331,7 +345,8 @@ export function CrudPage({
             variant="outline"
             size="sm"
             leftIcon={Download}
-            onClick={() => alert(`Exporting ${title.toLowerCase()} logs to CSV...`)}
+            isLoading={isExporting}
+            onClick={handleExport}
           >
             Export
           </Button>

@@ -9,6 +9,8 @@ import {
   Legend
 } from 'recharts';
 import { ChartContainer } from '@/components/ui/ChartContainer';
+import { tripService } from '@/services/tripService';
+import toast from 'react-hot-toast';
 
 /**
  * Recharts Custom Glass Tooltip styling
@@ -23,7 +25,7 @@ function CustomTooltip({ active, payload, label }) {
             <div key={pld.name} className="flex items-center gap-4 justify-between">
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full" style={{ backgroundColor: pld.color }} />
-                <span className="text-slate-450">{pld.name}:</span>
+                <span className="text-slate-455 text-slate-400">{pld.name}:</span>
               </div>
               <span className="font-bold text-slate-800">{pld.value} trips</span>
             </div>
@@ -36,8 +38,14 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export function TripOverview({ data, isLoading, onRefresh }) {
-  const handleExport = () => {
-    alert('Exporting monthly trip metrics to CSV...');
+  const handleExport = async () => {
+    try {
+      const filename = await tripService.export('csv');
+      toast.success(`Trip metrics report downloaded: ${filename}`);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export trip activity report.');
+    }
   };
 
   return (

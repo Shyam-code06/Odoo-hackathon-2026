@@ -121,6 +121,28 @@ export const analyticsService = {
     const response = await axiosInstance.get('/analytics/kpi-targets');
     return response.data;
   },
+
+  /**
+   * Export analytics reports to a downloadable file.
+   * Mock mode: generates CSV/JSON locally in the browser.
+   * Production mode: streams the file from the backend API.
+   *
+   * @param {'csv'|'json'} format - Output format (default: 'csv')
+   * @returns {Promise<string>} - The downloaded filename
+   */
+  export: async (format = 'csv') => {
+    if (USE_MOCK_DATA) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      // For analytics, we export the monthly revenue/expense trend data as the main tabular report
+      const exportData = mockAnalytics.monthlyRevenue || [];
+      return exportLocalData(exportData, 'analytics_report', format);
+    }
+    const response = await axiosInstance.get('/analytics/export', {
+      params: { format },
+      responseType: 'blob',
+    });
+    return downloadApiBlob(response, 'analytics_report', format);
+  },
 };
 
 export default analyticsService;

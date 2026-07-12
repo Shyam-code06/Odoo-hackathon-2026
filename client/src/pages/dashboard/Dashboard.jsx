@@ -3,6 +3,7 @@ import { PageWrapper } from '@/components/layout/PageWrapper';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { DashboardLoader } from '@/components/ui/Loader';
 import { dashboardService } from '@/services/dashboardService';
+import toast from 'react-hot-toast';
 
 // Dashboard Sub-components
 import { DashboardHeader } from './components/DashboardHeader';
@@ -23,6 +24,20 @@ export function Dashboard() {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const filename = await dashboardService.export('csv');
+      toast.success(`Dashboard overview data exported successfully: ${filename}`);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export dashboard data.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Fetch overview data from the telemetry service layer
   const fetchDashboardData = useCallback(async (showRefreshing = false) => {
@@ -72,6 +87,8 @@ export function Dashboard() {
         <DashboardHeader 
           onRefresh={handleRefresh} 
           isRefreshing={isRefreshing} 
+          onExport={handleExport}
+          isExporting={isExporting}
         />
 
         {/* Hazard Banner and Smart Alerts */}

@@ -7,6 +7,8 @@ import {
   Tooltip 
 } from 'recharts';
 import { ChartContainer } from '@/components/ui/ChartContainer';
+import { vehicleService } from '@/services/vehicleService';
+import toast from 'react-hot-toast';
 
 /**
  * Recharts Custom Glass Tooltip styling
@@ -21,8 +23,8 @@ function CustomTooltip({ active, payload }) {
           <span className="text-slate-800 font-bold">{data.name}</span>
         </div>
         <div className="flex justify-between gap-6 text-[10px]">
-          <span className="text-slate-450">Active count:</span>
-          <span className="font-bold text-slate-850">{data.value} units</span>
+          <span className="text-slate-455 text-slate-400">Active count:</span>
+          <span className="font-bold text-slate-800">{data.value} units</span>
         </div>
       </div>
     );
@@ -31,8 +33,14 @@ function CustomTooltip({ active, payload }) {
 }
 
 export function FleetOverview({ data, isLoading, onRefresh }) {
-  const handleExport = () => {
-    alert('Exporting fleet distribution logs...');
+  const handleExport = async () => {
+    try {
+      const filename = await vehicleService.export('csv');
+      toast.success(`Fleet classification report downloaded: ${filename}`);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export vehicle classification report.');
+    }
   };
 
   return (

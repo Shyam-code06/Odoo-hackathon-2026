@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BarChart3, Download, RefreshCw } from 'lucide-react';
 import { cn } from '@/utils';
 
@@ -47,16 +48,32 @@ export function ChartContainer({
             </button>
           )}
 
-          {onExport && (
-            <button
-              onClick={onExport}
-              disabled={isLoading}
-              className="inline-flex items-center gap-1 px-2.5 py-1.5 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span>CSV</span>
-            </button>
-          )}
+          {onExport && (() => {
+            const [isExporting, setIsExporting] = useState(false);
+            const handleExportClick = async (e) => {
+              if (isExporting) return;
+              setIsExporting(true);
+              try {
+                await onExport(e);
+              } finally {
+                setIsExporting(false);
+              }
+            };
+            return (
+              <button
+                onClick={handleExportClick}
+                disabled={isLoading || isExporting}
+                className="inline-flex items-center gap-1 px-2.5 py-1.5 border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-800 hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                {isExporting ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                <span>{isExporting ? 'Exporting...' : 'CSV'}</span>
+              </button>
+            );
+          })()}
         </div>
       </div>
 

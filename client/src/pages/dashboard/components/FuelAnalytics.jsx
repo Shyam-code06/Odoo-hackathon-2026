@@ -10,6 +10,8 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 import { ChartContainer } from '@/components/ui/ChartContainer';
+import { fuelService } from '@/services/fuelService';
+import toast from 'react-hot-toast';
 
 /**
  * Recharts Custom Glass Tooltip styling
@@ -21,17 +23,17 @@ function CustomTooltip({ active, payload, label }) {
         <p className="font-bold text-slate-800 border-b border-subtle pb-1 mb-1.5">{label}</p>
         <div className="space-y-1">
           <div className="flex items-center gap-6 justify-between">
-            <span className="text-slate-450">Fuel Cost:</span>
-            <span className="font-bold text-slate-850">${payload[0].value.toLocaleString()}</span>
+            <span className="text-slate-455 text-slate-405 text-slate-400">Fuel Cost:</span>
+            <span className="font-bold text-slate-800">${payload[0].value.toLocaleString()}</span>
           </div>
           <div className="flex items-center gap-6 justify-between">
-            <span className="text-slate-450">Consumption:</span>
-            <span className="font-bold text-slate-850">{payload[1].value.toLocaleString()} gal</span>
+            <span className="text-slate-455 text-slate-405 text-slate-400">Consumption:</span>
+            <span className="font-bold text-slate-800">{payload[1].value.toLocaleString()} gal</span>
           </div>
           {payload[2] && (
             <div className="flex items-center gap-6 justify-between">
-              <span className="text-slate-450">Efficiency:</span>
-              <span className="font-bold text-slate-850">{payload[2].value} MPG</span>
+              <span className="text-slate-455 text-slate-405 text-slate-400">Efficiency:</span>
+              <span className="font-bold text-slate-800">{payload[2].value} MPG</span>
             </div>
           )}
         </div>
@@ -42,8 +44,14 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export function FuelAnalytics({ data, isLoading, onRefresh }) {
-  const handleExport = () => {
-    alert('Exporting fuel logs... ');
+  const handleExport = async () => {
+    try {
+      const filename = await fuelService.export('csv');
+      toast.success(`Fuel logs report downloaded: ${filename}`);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export fuel logs.');
+    }
   };
 
   return (

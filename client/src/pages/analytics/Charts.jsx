@@ -34,6 +34,20 @@ export function Charts() {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const filename = await analyticsService.export('csv');
+      toast.success(`Charts data exported successfully: ${filename}`);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to export charts data.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const fetchData = async (showRefreshing = false) => {
     if (showRefreshing) setIsRefreshing(true);
@@ -97,7 +111,8 @@ export function Charts() {
               variant="primary"
               size="sm"
               leftIcon={Download}
-              onClick={() => toast.success('Charts exported')}
+              isLoading={isExporting}
+              onClick={handleExport}
             >
               Export
             </Button>
@@ -212,7 +227,7 @@ export function Charts() {
               title="Financial Overview — Composed Chart"
               subtitle="Revenue bars with expense and profit trend lines overlaid"
               onRefresh={() => fetchData(true)}
-              onExport={() => toast.success('Exported')}
+              onExport={handleExport}
               isLoading={isRefreshing}
             >
               <ResponsiveContainer width="100%" height={260}>

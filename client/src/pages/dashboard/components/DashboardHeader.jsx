@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { Button } from '@/components/ui/Button';
 import { Select } from '@/components/ui/Select';
 
-export function DashboardHeader({ onRefresh, isRefreshing }) {
+export function DashboardHeader({ onRefresh, isRefreshing, onExport, isExporting }) {
   const [regionFilter, setRegionFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
@@ -50,7 +50,8 @@ export function DashboardHeader({ onRefresh, isRefreshing }) {
             variant="outline"
             size="sm"
             leftIcon={Download}
-            onClick={() => alert('Exporting active dashboard data to CSV...')}
+            isLoading={isExporting}
+            onClick={onExport}
           >
             Export Logs
           </Button>
