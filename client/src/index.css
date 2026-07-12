@@ -339,6 +339,14 @@
     border-right: 1px solid var(--color-slate-200) !important;
   }
 
+  /* Force active link elements and their icons in the sidebar to render in a dark color */
+  aside .bg-slate-800.text-white,
+  aside .bg-slate-800\/80.text-white,
+  aside .bg-slate-800.text-white svg,
+  aside .bg-slate-800\/80.text-white svg {
+    color: var(--color-slate-50) !important;
+  }
+
   /* Table styling */
   thead {
     background-color: var(--color-slate-50) !important;
