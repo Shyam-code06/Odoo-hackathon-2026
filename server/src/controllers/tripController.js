@@ -1,22 +1,20 @@
 const tripService = require('../services/tripService');
 
+const getFMId = (req) => req.user.fleetManagerId || req.user.id;
+
 const getTrips = async (req, res, next) => {
   try {
-    const trips = await tripService.getTrips(req.query);
+    const trips = await tripService.getTrips(req.query, getFMId(req));
     return res.status(200).json(trips);
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 };
 
 const getTripById = async (req, res, next) => {
   try {
-    const trip = await tripService.getTripById(req.params.id);
+    const trip = await tripService.getTripById(req.params.id, getFMId(req));
     return res.status(200).json(trip);
   } catch (err) {
-    if (err.message.includes('not found')) {
-      return res.status(404).json({ error: err.message });
-    }
+    if (err.message.includes('not found')) return res.status(404).json({ error: err.message });
     next(err);
   }
 };
@@ -27,46 +25,33 @@ const createTrip = async (req, res, next) => {
     if (!source || !destination || cargoWeight === undefined || plannedDistance === undefined || !vehicleId || !driverId) {
       return res.status(400).json({ error: 'Missing required trip fields.' });
     }
-    const trip = await tripService.createTrip(req.body);
+    const trip = await tripService.createTrip(req.body, getFMId(req));
     return res.status(201).json(trip);
   } catch (err) {
-    if (err.message.includes('exceeds')) {
-      return res.status(400).json({ error: err.message });
-    }
+    if (err.message.includes('exceeds')) return res.status(400).json({ error: err.message });
     next(err);
   }
 };
 
 const updateTrip = async (req, res, next) => {
   try {
-    const trip = await tripService.updateTrip(req.params.id, req.body);
+    const trip = await tripService.updateTrip(req.params.id, req.body, getFMId(req));
     return res.status(200).json(trip);
   } catch (err) {
-    if (err.message.includes('not found')) {
-      return res.status(404).json({ error: err.message });
-    }
-    if (err.message.includes('exceeds') || err.message.includes('DRAFT')) {
-      return res.status(400).json({ error: err.message });
-    }
+    if (err.message.includes('not found')) return res.status(404).json({ error: err.message });
+    if (err.message.includes('exceeds') || err.message.includes('DRAFT')) return res.status(400).json({ error: err.message });
     next(err);
   }
 };
 
 const dispatchTrip = async (req, res, next) => {
   try {
-    const trip = await tripService.dispatchTrip(req.params.id);
+    const trip = await tripService.dispatchTrip(req.params.id, getFMId(req));
     return res.status(200).json(trip);
   } catch (err) {
-    if (err.message.includes('not found')) {
-      return res.status(404).json({ error: err.message });
-    }
-    if (
-      err.message.includes('cannot be dispatched') ||
-      err.message.includes('already') ||
-      err.message.includes('expired') ||
-      err.message.includes('exceeds') ||
-      err.message.includes('DRAFT')
-    ) {
+    if (err.message.includes('not found')) return res.status(404).json({ error: err.message });
+    if (err.message.includes('cannot be dispatched') || err.message.includes('already') ||
+        err.message.includes('expired') || err.message.includes('exceeds') || err.message.includes('DRAFT')) {
       return res.status(400).json({ error: err.message });
     }
     next(err);
@@ -76,62 +61,46 @@ const dispatchTrip = async (req, res, next) => {
 const completeTrip = async (req, res, next) => {
   try {
     const { actualDistance } = req.body;
-    const trip = await tripService.completeTrip(req.params.id, actualDistance);
+    const trip = await tripService.completeTrip(req.params.id, actualDistance, getFMId(req));
     return res.status(200).json(trip);
   } catch (err) {
-    if (err.message.includes('not found')) {
-      return res.status(404).json({ error: err.message });
-    }
-    if (err.message.includes('DISPATCHED')) {
-      return res.status(400).json({ error: err.message });
-    }
+    if (err.message.includes('not found')) return res.status(404).json({ error: err.message });
+    if (err.message.includes('DISPATCHED')) return res.status(400).json({ error: err.message });
     next(err);
   }
 };
 
 const cancelTrip = async (req, res, next) => {
   try {
-    const trip = await tripService.cancelTrip(req.params.id);
+    const trip = await tripService.cancelTrip(req.params.id, getFMId(req));
     return res.status(200).json(trip);
   } catch (err) {
-    if (err.message.includes('not found')) {
-      return res.status(404).json({ error: err.message });
-    }
-    if (err.message.includes('DRAFT or DISPATCHED')) {
-      return res.status(400).json({ error: err.message });
-    }
+    if (err.message.includes('not found')) return res.status(404).json({ error: err.message });
+    if (err.message.includes('DRAFT or DISPATCHED')) return res.status(400).json({ error: err.message });
     next(err);
   }
 };
 
 const deleteTrip = async (req, res, next) => {
   try {
-    await tripService.deleteTrip(req.params.id);
+    await tripService.deleteTrip(req.params.id, getFMId(req));
     return res.status(200).json({ message: 'Trip deleted successfully.' });
   } catch (err) {
-    if (err.message.includes('not found')) {
-      return res.status(404).json({ error: err.message });
-    }
-    if (err.message.includes('active or completed')) {
-      return res.status(400).json({ error: err.message });
-    }
+    if (err.message.includes('not found')) return res.status(404).json({ error: err.message });
+    if (err.message.includes('active or completed')) return res.status(400).json({ error: err.message });
     next(err);
   }
 };
 
 const exportCSV = async (req, res, next) => {
   try {
-    const trips = await tripService.getTrips(req.query);
+    const trips = await tripService.getTrips(req.query, getFMId(req));
     const headers = ['Trip Number', 'Source', 'Destination', 'Cargo Weight (kg)', 'Planned Distance (km)', 'Actual Distance (km)', 'Status', 'Revenue ($)', 'Dispatch Time', 'Completion Time'];
     const rows = trips.map(t => [
       t.tripNumber,
       `"${t.source.replace(/"/g, '""')}"`,
       `"${t.destination.replace(/"/g, '""')}"`,
-      t.cargoWeight,
-      t.plannedDistance,
-      t.actualDistance || '',
-      t.status,
-      t.revenue || '',
+      t.cargoWeight, t.plannedDistance, t.actualDistance || '', t.status, t.revenue || '',
       t.dispatchTime ? t.dispatchTime.toISOString() : '',
       t.completionTime ? t.completionTime.toISOString() : ''
     ]);
@@ -139,19 +108,7 @@ const exportCSV = async (req, res, next) => {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename="trips_export.csv"');
     return res.status(200).send(csvContent);
-  } catch (err) {
-    next(err);
-  }
+  } catch (err) { next(err); }
 };
 
-module.exports = {
-  getTrips,
-  getTripById,
-  createTrip,
-  updateTrip,
-  dispatchTrip,
-  completeTrip,
-  cancelTrip,
-  deleteTrip,
-  exportCSV,
-};
+module.exports = { getTrips, getTripById, createTrip, updateTrip, dispatchTrip, completeTrip, cancelTrip, deleteTrip, exportCSV };

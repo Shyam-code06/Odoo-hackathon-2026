@@ -17,6 +17,9 @@ enum Role {
   DISPATCHER
   SAFETY_OFFICER
   FINANCIAL_ANALYST
+  MAINTENANCE_MANAGER
+  DRIVER_MANAGER
+  VIEWER
   DRIVER
 }
 
@@ -58,19 +61,55 @@ enum ExpenseCategory {
   OTHER
 }
 
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  DEACTIVATE
+  ACTIVATE
+  RESET_PASSWORD
+  LOGIN
+  LOGOUT
+}
+
 // --- SCHEMAS / MODELS ---
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String   // Hashed password
-  name      String
-  role      Role     @default(DRIVER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
+  id              String    @id @default(uuid())
+  email           String    @unique
+  password        String                           // Hashed password
+  name            String
+  role            Role      @default(VIEWER)
+  isActive        Boolean   @default(true)         // Soft deactivation
+  isDefault       Boolean   @default(false)        // System default account; cannot be deleted
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Self-referential org relationship:
+  // FLEET_MANAGER: fleetManagerId = null (they own the org)
+  // All other roles: fleetManagerId = their Fleet Manager's User.id
+  fleetManagerId  String?
+  fleetManager    User?     @relation("OrgUsers", fields: [fleetManagerId], references: [id], onDelete: Restrict)
+  orgUsers        User[]    @relation("OrgUsers")
+
   // Link User to Driver profile (1-to-1 relationship if the driver logs in)
-  driver    Driver?
+  driver          Driver?
+
+  // Data owned by this fleet manager (only populated when role = FLEET_MANAGER)
+  vehicles        Vehicle[]
+  drivers         Driver[]  @relation("FleetManagerDrivers")
+  trips           Trip[]    @relation("FleetManagerTrips")
+  maintenanceLogs MaintenanceLog[]
+  fuelLogs        FuelLog[]
+  expenses        Expense[]
+  vehicleDocuments VehicleDocument[]
+
+  // Audit trail
+  auditLogs       AuditLog[] @relation("AuditUser")
+
+  @@index([fleetManagerId])
+  @@index([role])
+  @@index([isActive])
 }
 
 model Vehicle {
@@ -86,6 +125,10 @@ model Vehicle {
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @updatedAt
 
+  // Org ownership — all vehicles belong to a Fleet Manager
+  fleetManagerId     String
+  fleetManager       User              @relation(fields: [fleetManagerId], references: [id])
+
   // Relationships
   trips              Trip[]
   maintenanceLogs    MaintenanceLog[]
@@ -97,6 +140,7 @@ model Vehicle {
   @@index([status])
   @@index([type])
   @@index([region])
+  @@index([fleetManagerId])
 }
 
 model Driver {
@@ -113,11 +157,16 @@ model Driver {
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 
+  // Org ownership
+  fleetManagerId    String
+  fleetManager      User         @relation("FleetManagerDrivers", fields: [fleetManagerId], references: [id])
+
   // Relationships
   trips             Trip[]
 
   @@index([status])
   @@index([licenseExpiryDate])
+  @@index([fleetManagerId])
 }
 
 model Trip {
@@ -138,7 +187,11 @@ model Trip {
   vehicle         Vehicle     @relation(fields: [vehicleId], references: [id])
   driverId        String
   driver          Driver      @relation(fields: [driverId], references: [id])
-  
+
+  // Org ownership
+  fleetManagerId  String
+  fleetManager    User        @relation("FleetManagerTrips", fields: [fleetManagerId], references: [id])
+
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
@@ -149,82 +202,123 @@ model Trip {
   @@index([status])
   @@index([vehicleId])
   @@index([driverId])
+  @@index([fleetManagerId])
 }
 
 model MaintenanceLog {
-  id          String    @id @default(uuid())
-  description String    // "Oil change", "Brake pad replacement", etc.
-  cost        Decimal   @db.Decimal(12, 2)
-  startDate   DateTime  @default(now())
-  endDate     DateTime? // Nullable. When filled, maintenance is complete.
-  isClosed    Boolean   @default(false)
+  id             String    @id @default(uuid())
+  description    String    // "Oil change", "Brake pad replacement", etc.
+  cost           Decimal   @db.Decimal(12, 2)
+  startDate      DateTime  @default(now())
+  endDate        DateTime? // Nullable. When filled, maintenance is complete.
+  isClosed       Boolean   @default(false)
 
-  // Relationships  
-  vehicleId   String
-  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id])
+  // Relationships
+  vehicleId      String
+  vehicle        Vehicle   @relation(fields: [vehicleId], references: [id])
 
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  // Org ownership
+  fleetManagerId String
+  fleetManager   User      @relation(fields: [fleetManagerId], references: [id])
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   @@index([vehicleId])
   @@index([isClosed])
+  @@index([fleetManagerId])
 }
 
 model FuelLog {
-  id        String   @id @default(uuid())
-  liters    Float
-  cost      Decimal  @db.Decimal(12, 2)
-  date      DateTime @default(now())
-  odometer  Float    // Odometer reading at moment of refueling (for mpg validation)
+  id             String   @id @default(uuid())
+  liters         Float
+  cost           Decimal  @db.Decimal(12, 2)
+  date           DateTime @default(now())
+  odometer       Float    // Odometer reading at moment of refueling (for mpg validation)
 
   // Relationships
-  vehicleId String
-  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id])
-  tripId    String?  // Optional context link to a Trip
-  trip      Trip?    @relation(fields: [tripId], references: [id])
+  vehicleId      String
+  vehicle        Vehicle  @relation(fields: [vehicleId], references: [id])
+  tripId         String?  // Optional context link to a Trip
+  trip           Trip?    @relation(fields: [tripId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  // Org ownership
+  fleetManagerId String
+  fleetManager   User     @relation(fields: [fleetManagerId], references: [id])
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([vehicleId])
   @@index([tripId])
+  @@index([fleetManagerId])
 }
 
 model Expense {
-  id          String          @id @default(uuid())
-  amount      Decimal         @db.Decimal(12, 2)
-  category    ExpenseCategory
-  date        DateTime        @default(now())
-  description String?
+  id             String          @id @default(uuid())
+  amount         Decimal         @db.Decimal(12, 2)
+  category       ExpenseCategory
+  date           DateTime        @default(now())
+  description    String?
 
   // Relationships
-  vehicleId   String
-  vehicle     Vehicle         @relation(fields: [vehicleId], references: [id])
-  tripId      String?
-  trip        Trip?           @relation(fields: [tripId], references: [id])
+  vehicleId      String
+  vehicle        Vehicle         @relation(fields: [vehicleId], references: [id])
+  tripId         String?
+  trip           Trip?           @relation(fields: [tripId], references: [id])
 
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  // Org ownership
+  fleetManagerId String
+  fleetManager   User            @relation(fields: [fleetManagerId], references: [id])
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@index([vehicleId])
   @@index([tripId])
   @@index([category])
+  @@index([fleetManagerId])
 }
 
-// Bonus Feature Table
 model VehicleDocument {
-  id           String   @id @default(uuid())
-  documentType String   // "Insurance", "Registration", "Pollution Permit"
-  documentUrl  String   // Storage bucket link for documents
-  expiryDate   DateTime
+  id             String   @id @default(uuid())
+  documentType   String   // "Insurance", "Registration", "Pollution Permit"
+  documentUrl    String   // Storage bucket link for documents
+  expiryDate     DateTime
 
   // Relationships
-  vehicleId    String
-  vehicle      Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId      String
+  vehicle        Vehicle  @relation(fields: [vehicleId], references: [id])
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  // Org ownership
+  fleetManagerId String
+  fleetManager   User     @relation(fields: [fleetManagerId], references: [id])
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([vehicleId])
   @@index([expiryDate])
+  @@index([fleetManagerId])
+}
+
+model AuditLog {
+  id           String      @id @default(uuid())
+  action       AuditAction
+  resourceType String      // "Vehicle", "Driver", "Trip", etc.
+  resourceId   String?     // The ID of the affected record
+  description  String?     // Human-readable description
+  metadata     Json?       // Optional extra data (before/after values)
+  timestamp    DateTime    @default(now())
+
+  // Who performed the action
+  userId       String
+  user         User        @relation("AuditUser", fields: [userId], references: [id])
+  userRole     String      // Snapshot of role at time of action
+  fleetManagerId String    // Which org this belongs to
+
+  @@index([userId])
+  @@index([fleetManagerId])
+  @@index([resourceType])
+  @@index([timestamp])
 }

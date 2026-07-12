@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const authRoutes = require('./authRoutes');
+const userRoutes = require('./userRoutes');
 const vehicleRoutes = require('./vehicleRoutes');
 const driverRoutes = require('./driverRoutes');
 const tripRoutes = require('./tripRoutes');
@@ -13,6 +14,7 @@ const reportRoutes = require('./reportRoutes');
 
 // Mount routes
 router.use('/auth', authRoutes);
+router.use('/users', userRoutes);
 router.use('/vehicles', vehicleRoutes);
 router.use('/drivers', driverRoutes);
 router.use('/trips', tripRoutes);

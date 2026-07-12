@@ -1,7 +1,8 @@
 const prisma = require('../config/db');
 
-const getVehiclesReportData = async () => {
+const getVehiclesReportData = async (fleetManagerId) => {
   const vehicles = await prisma.vehicle.findMany({
+    where: { fleetManagerId },
     include: {
       trips: {
         where: { status: 'COMPLETED' },
@@ -64,8 +65,8 @@ const getVehiclesReportData = async () => {
   });
 };
 
-const getFuelEfficiencyReport = async () => {
-  const data = await getVehiclesReportData();
+const getFuelEfficiencyReport = async (fleetManagerId) => {
+  const data = await getVehiclesReportData(fleetManagerId);
   return data.map(v => ({
     id: v.id,
     registrationNumber: v.registrationNumber,
@@ -77,8 +78,8 @@ const getFuelEfficiencyReport = async () => {
   }));
 };
 
-const getOperationalCostReport = async () => {
-  const data = await getVehiclesReportData();
+const getOperationalCostReport = async (fleetManagerId) => {
+  const data = await getVehiclesReportData(fleetManagerId);
   return data.map(v => ({
     id: v.id,
     registrationNumber: v.registrationNumber,
@@ -90,8 +91,8 @@ const getOperationalCostReport = async () => {
   }));
 };
 
-const getROIReport = async () => {
-  const data = await getVehiclesReportData();
+const getROIReport = async (fleetManagerId) => {
+  const data = await getVehiclesReportData(fleetManagerId);
   return data.map(v => ({
     id: v.id,
     registrationNumber: v.registrationNumber,
@@ -104,8 +105,8 @@ const getROIReport = async () => {
   }));
 };
 
-const exportCSV = async () => {
-  const data = await getVehiclesReportData();
+const exportCSV = async (fleetManagerId) => {
+  const data = await getVehiclesReportData(fleetManagerId);
   
   // Format CSV
   const headers = [

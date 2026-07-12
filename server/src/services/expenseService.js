@@ -1,9 +1,9 @@
 const prisma = require('../config/db');
 
-const getExpenses = async (query = {}) => {
+const getExpenses = async (query = {}, fleetManagerId) => {
   const { category, vehicleId, tripId } = query;
-  
-  const where = {};
+
+  const where = { fleetManagerId };
   if (category) where.category = category;
   if (vehicleId) where.vehicleId = vehicleId;
   if (tripId) where.tripId = tripId;
@@ -11,29 +11,24 @@ const getExpenses = async (query = {}) => {
   return prisma.expense.findMany({
     where,
     orderBy: { date: 'desc' },
-    include: {
-      vehicle: true,
-      trip: true,
-    },
+    include: { vehicle: true, trip: true },
   });
 };
 
-const getExpenseById = async (id) => {
-  const expense = await prisma.expense.findUnique({
-    where: { id },
+const getExpenseById = async (id, fleetManagerId) => {
+  const expense = await prisma.expense.findFirst({
+    where: { id, fleetManagerId },
     include: { vehicle: true },
   });
-  if (!expense) {
-    throw new Error('Expense not found.');
-  }
+  if (!expense) throw new Error('Expense not found.');
   return expense;
 };
 
-const createExpense = async (data) => {
-  const vehicle = await prisma.vehicle.findUnique({ where: { id: data.vehicleId } });
-  if (!vehicle) {
-    throw new Error('Vehicle not found.');
-  }
+const createExpense = async (data, fleetManagerId) => {
+  const vehicle = await prisma.vehicle.findFirst({
+    where: { id: data.vehicleId, fleetManagerId },
+  });
+  if (!vehicle) throw new Error('Vehicle not found.');
 
   return prisma.expense.create({
     data: {
@@ -43,28 +38,25 @@ const createExpense = async (data) => {
       description: data.description || null,
       vehicleId: data.vehicleId,
       tripId: data.tripId || null,
+      fleetManagerId,
     },
   });
 };
 
-const updateExpense = async (id, data) => {
-  await getExpenseById(id);
+const updateExpense = async (id, data, fleetManagerId) => {
+  await getExpenseById(id, fleetManagerId);
 
   const updatedData = { ...data };
+  delete updatedData.fleetManagerId;
   if (data.amount !== undefined) updatedData.amount = parseFloat(data.amount);
   if (data.date) updatedData.date = new Date(data.date);
 
-  return prisma.expense.update({
-    where: { id },
-    data: updatedData,
-  });
+  return prisma.expense.update({ where: { id }, data: updatedData });
 };
 
-const deleteExpense = async (id) => {
-  await getExpenseById(id);
-  return prisma.expense.delete({
-    where: { id },
-  });
+const deleteExpense = async (id, fleetManagerId) => {
+  await getExpenseById(id, fleetManagerId);
+  return prisma.expense.delete({ where: { id } });
 };
 
 module.exports = {

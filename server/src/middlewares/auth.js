@@ -1,6 +1,13 @@
 const jwt = require('jsonwebtoken');
 const env = require('../config/env');
 
+/**
+ * authenticateJWT
+ * Verifies the Bearer token from the Authorization header.
+ * On success, sets req.user with:
+ *   { id, email, role, name, fleetManagerId, permissions }
+ * where fleetManagerId is the Fleet Manager's user ID that scopes all org data.
+ */
 const authenticateJWT = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
@@ -23,6 +30,11 @@ const authenticateJWT = (req, res, next) => {
   }
 };
 
+/**
+ * requireRole(allowedRoles)
+ * Checks req.user.role against the allowed roles array.
+ * Must be used AFTER authenticateJWT.
+ */
 const requireRole = (allowedRoles) => {
   return (req, res, next) => {
     if (!req.user) {

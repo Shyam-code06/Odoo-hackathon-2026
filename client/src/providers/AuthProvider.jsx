@@ -4,15 +4,15 @@ import authService from '@/services/authService';
 
 /**
  * Global authentication state provider.
- * Supports JWT storage logic, remember-me persistence, session recovery, 
- * global auth-failure event subscriptions, and RBAC utility functions.
+ * Supports JWT storage, remember-me persistence, session recovery,
+ * global auth-failure event subscriptions, RBAC utilities, and permission checks.
  */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Checks and restores authentication session on initial mount
+  // Restore session from storage on mount
   useEffect(() => {
     const initializeAuth = async () => {
       try {
@@ -20,14 +20,11 @@ export function AuthProvider({ children }) {
         const token = localStorage.getItem('transitops_auth_token') || sessionStorage.getItem('transitops_auth_token');
 
         if (token && storedUser) {
-          // Future validation: send token to server to confirm validity
-          // For now, restore user from local storage
           setUser(JSON.parse(storedUser));
           setIsAuthenticated(true);
         }
       } catch (error) {
         console.error('Failed to restore authentication session:', error);
-        // Clean up corrupt storage
         localStorage.removeItem('transitops_auth_token');
         localStorage.removeItem('transitops_user');
         sessionStorage.removeItem('transitops_auth_token');
@@ -39,7 +36,7 @@ export function AuthProvider({ children }) {
 
     initializeAuth();
 
-    // Listen to global 401 Unauthorized events emitted by Axios interceptor
+    // Listen to global 401/403 Unauthorized events emitted by Axios interceptor
     const handleUnauthorized = () => {
       setUser(null);
       setIsAuthenticated(false);
@@ -50,14 +47,10 @@ export function AuthProvider({ children }) {
     };
 
     window.addEventListener('auth:unauthorized', handleUnauthorized);
-    return () => {
-      window.removeEventListener('auth:unauthorized', handleUnauthorized);
-    };
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, []);
 
-  /**
-   * Log in user using email and password credentials.
-   */
+  /** Login with email + password. */
   const login = useCallback(async (email, password, rememberMe = false) => {
     setLoading(true);
     try {
@@ -79,9 +72,7 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  /**
-   * Discard authentication tokens and log user out.
-   */
+  /** Log out and clear all session data. */
   const logout = useCallback(async () => {
     setLoading(true);
     try {
@@ -100,31 +91,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   /**
-   * Register a new user in the workspace.
-   */
-  const register = useCallback(async (name, email, password, role) => {
-    setLoading(true);
-    try {
-      const response = await authService.register({ name, email, password, role });
-      const { user: registeredUser, token } = response;
-
-      setUser(registeredUser);
-      setIsAuthenticated(true);
-
-      localStorage.setItem('transitops_auth_token', token);
-      localStorage.setItem('transitops_user', JSON.stringify(registeredUser));
-
-      return { success: true };
-    } catch (error) {
-      return { success: false, error: error.message || 'Registration failed.' };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  /**
-   * Role-Based Access Control utility.
-   * Checks if current user possesses any of the required credentials.
+   * Check if the current user has a specific role.
+   * @param {string|string[]} requiredRoles - Role(s) to check
    */
   const hasRole = useCallback((requiredRoles) => {
     if (!user) return false;
@@ -133,14 +101,33 @@ export function AuthProvider({ children }) {
     return rolesArray.includes(user.role);
   }, [user]);
 
+  /**
+   * Check if the current user has a specific granular permission.
+   * Permissions come from the JWT payload (set by the backend based on role).
+   * @param {string} permission - The permission string to check (e.g., 'create_vehicle')
+   */
+  const hasPermission = useCallback((permission) => {
+    if (!user) return false;
+    if (!permission) return true;
+    return Array.isArray(user.permissions) && user.permissions.includes(permission);
+  }, [user]);
+
+  /**
+   * Check if the current user is the Fleet Manager (org admin).
+   */
+  const isFleetManager = useCallback(() => {
+    return user?.role === 'fleet_manager';
+  }, [user]);
+
   const value = {
     user,
     isAuthenticated,
     loading,
     login,
-    register,
     logout,
     hasRole,
+    hasPermission,
+    isFleetManager,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

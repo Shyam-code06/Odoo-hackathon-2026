@@ -20,10 +20,12 @@ export const USER_ROLE_LABELS = {
   dispatcher: 'Dispatcher',
   safety_officer: 'Safety Officer',
   financial_analyst: 'Financial Analyst',
+  maintenance_manager: 'Maintenance Manager',
+  driver_manager: 'Driver Manager',
+  viewer: 'Viewer',
   admin: 'Administrator',
   operator: 'Operator',
   driver: 'Driver',
-  viewer: 'Viewer',
 };
 
 export const USER_ROLE_COLORS = {
@@ -31,10 +33,12 @@ export const USER_ROLE_COLORS = {
   dispatcher: 'info',
   safety_officer: 'success',
   financial_analyst: 'purple',
+  maintenance_manager: 'warning',
+  driver_manager: 'teal',
+  viewer: 'neutral',
   admin: 'primary',
   operator: 'info',
   driver: 'neutral',
-  viewer: 'neutral',
 };
 
 // Vehicle operational status
@@ -103,10 +107,12 @@ export const EXPENSE_CATEGORY = {
 };
 
 // All roles allowed in protected sections
-const ALL_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'financial_analyst', 'admin', 'operator', 'driver'];
-const MANAGEMENT_ROLES = ['fleet_manager', 'dispatcher', 'admin', 'operator'];
+const ALL_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'financial_analyst', 'maintenance_manager', 'driver_manager', 'viewer', 'admin', 'operator', 'driver'];
+const MANAGEMENT_ROLES = ['fleet_manager', 'dispatcher', 'driver_manager', 'admin', 'operator'];
 const ANALYTICS_ROLES = ['fleet_manager', 'financial_analyst', 'dispatcher', 'admin', 'operator'];
 const FINANCE_ROLES = ['fleet_manager', 'financial_analyst', 'admin', 'operator'];
+const MAINTENANCE_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'maintenance_manager', 'admin', 'operator'];
+const FM_ONLY = ['fleet_manager'];
 
 // Navigation layout settings
 export const NAV_ITEMS = [
@@ -130,7 +136,7 @@ export const NAV_ITEMS = [
     path: '/maintenance', 
     label: 'Maintenance', 
     icon: 'Wrench',
-    allowedRoles: MANAGEMENT_ROLES,
+    allowedRoles: MAINTENANCE_ROLES,
   },
   {
     label: 'Fuel & Expenses',
@@ -151,11 +157,17 @@ export const NAV_ITEMS = [
       { path: '/analytics/kpis', label: 'KPI Targets', icon: 'Target', allowedRoles: ANALYTICS_ROLES },
     ]
   },
+  {
+    path: '/users',
+    label: 'User Management',
+    icon: 'UserCog',
+    allowedRoles: FM_ONLY,
+  },
   { 
     path: '/settings', 
     label: 'Settings', 
     icon: 'Settings',
-    allowedRoles: MANAGEMENT_ROLES,
+    allowedRoles: FM_ONLY,
   },
 ];
 

@@ -23,16 +23,19 @@ const KPIs        = lazy(() => import('@/pages/analytics/KPIs'));
 const Settings    = lazy(() => import('@/pages/settings/Settings'));
 const Profile     = lazy(() => import('@/pages/profile/Profile'));
 const Notifications = lazy(() => import('@/pages/notifications/Notifications'));
+const UserManagement = lazy(() => import('@/pages/users/UserManagement'));
 const ServerError = lazy(() => import('@/pages/ServerError'));
 const NetworkError = lazy(() => import('@/pages/NetworkError'));
 const Unauthorized = lazy(() => import('@/pages/Unauthorized'));
 const NotFound    = lazy(() => import('@/pages/NotFound'));
 
 // All roles that can access protected sections
-const ALL_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'financial_analyst', 'admin', 'operator', 'driver'];
-const MANAGEMENT_ROLES = ['fleet_manager', 'dispatcher', 'admin', 'operator'];
+const ALL_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'financial_analyst', 'maintenance_manager', 'driver_manager', 'viewer', 'admin', 'operator', 'driver'];
+const MANAGEMENT_ROLES = ['fleet_manager', 'dispatcher', 'driver_manager', 'admin', 'operator'];
 const ANALYTICS_ROLES  = ['fleet_manager', 'financial_analyst', 'dispatcher', 'admin', 'operator'];
 const FINANCE_ROLES    = ['fleet_manager', 'financial_analyst', 'admin', 'operator'];
+const MAINTENANCE_ROLES = ['fleet_manager', 'dispatcher', 'safety_officer', 'maintenance_manager', 'admin', 'operator'];
+const FM_ONLY = ['fleet_manager'];
 
 /** Route-level Suspense fallback */
 const SuspenseRoute = ({ children }) => (
@@ -94,7 +97,7 @@ export function AppRoutes() {
         <Route
           path="/maintenance"
           element={
-            <RoleGuard allowedRoles={MANAGEMENT_ROLES}>
+            <RoleGuard allowedRoles={MAINTENANCE_ROLES}>
               <SuspenseRoute><Maintenance /></SuspenseRoute>
             </RoleGuard>
           }
@@ -144,12 +147,22 @@ export function AppRoutes() {
           }
         />
 
-        {/* Settings */}
+        {/* Settings — Fleet Manager only */}
         <Route
           path="/settings"
           element={
-            <RoleGuard allowedRoles={MANAGEMENT_ROLES}>
+            <RoleGuard allowedRoles={FM_ONLY}>
               <SuspenseRoute><Settings /></SuspenseRoute>
+            </RoleGuard>
+          }
+        />
+
+        {/* User Management — Fleet Manager only */}
+        <Route
+          path="/users"
+          element={
+            <RoleGuard allowedRoles={FM_ONLY}>
+              <SuspenseRoute><UserManagement /></SuspenseRoute>
             </RoleGuard>
           }
         />

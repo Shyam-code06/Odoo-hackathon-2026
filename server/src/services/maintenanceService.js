@@ -1,37 +1,33 @@
 const prisma = require('../config/db');
 
-const getMaintenanceLogs = async (query = {}) => {
+const getMaintenanceLogs = async (query = {}, fleetManagerId) => {
   const { isClosed, vehicleId } = query;
-  
-  const where = {};
+
+  const where = { fleetManagerId };
   if (isClosed !== undefined) where.isClosed = isClosed === 'true';
   if (vehicleId) where.vehicleId = vehicleId;
 
   return prisma.maintenanceLog.findMany({
     where,
     orderBy: { createdAt: 'desc' },
-    include: {
-      vehicle: true,
-    },
+    include: { vehicle: true },
   });
 };
 
-const getMaintenanceLogById = async (id) => {
-  const log = await prisma.maintenanceLog.findUnique({
-    where: { id },
+const getMaintenanceLogById = async (id, fleetManagerId) => {
+  const log = await prisma.maintenanceLog.findFirst({
+    where: { id, fleetManagerId },
     include: { vehicle: true },
   });
-  if (!log) {
-    throw new Error('Maintenance log not found.');
-  }
+  if (!log) throw new Error('Maintenance log not found.');
   return log;
 };
 
-const createMaintenanceLog = async (data) => {
-  const vehicle = await prisma.vehicle.findUnique({ where: { id: data.vehicleId } });
-  if (!vehicle) {
-    throw new Error('Vehicle not found.');
-  }
+const createMaintenanceLog = async (data, fleetManagerId) => {
+  const vehicle = await prisma.vehicle.findFirst({
+    where: { id: data.vehicleId, fleetManagerId },
+  });
+  if (!vehicle) throw new Error('Vehicle not found.');
   if (vehicle.status === 'ON_TRIP') {
     throw new Error('Cannot put vehicle into maintenance while it is on an active trip.');
   }
@@ -40,7 +36,6 @@ const createMaintenanceLog = async (data) => {
   }
 
   return prisma.$transaction(async (tx) => {
-    // 1. Create Maintenance Log
     const log = await tx.maintenanceLog.create({
       data: {
         description: data.description,
@@ -48,10 +43,10 @@ const createMaintenanceLog = async (data) => {
         startDate: data.startDate ? new Date(data.startDate) : new Date(),
         isClosed: false,
         vehicleId: data.vehicleId,
+        fleetManagerId,
       },
     });
 
-    // 2. Change vehicle status to IN_SHOP
     await tx.vehicle.update({
       where: { id: data.vehicleId },
       data: { status: 'IN_SHOP' },
@@ -61,17 +56,14 @@ const createMaintenanceLog = async (data) => {
   });
 };
 
-const completeMaintenanceLog = async (id, data) => {
-  const log = await getMaintenanceLogById(id);
-  if (log.isClosed) {
-    throw new Error('Maintenance log is already closed.');
-  }
+const completeMaintenanceLog = async (id, data, fleetManagerId) => {
+  const log = await getMaintenanceLogById(id, fleetManagerId);
+  if (log.isClosed) throw new Error('Maintenance log is already closed.');
 
   const cost = data.cost !== undefined ? parseFloat(data.cost) : parseFloat(log.cost);
   const description = data.description || log.description;
 
   return prisma.$transaction(async (tx) => {
-    // 1. Close the maintenance log
     const updatedLog = await tx.maintenanceLog.update({
       where: { id },
       data: {
@@ -82,22 +74,18 @@ const completeMaintenanceLog = async (id, data) => {
       },
     });
 
-    // 2. Check if vehicle is retired before changing its status back to AVAILABLE
     const vehicle = await tx.vehicle.findUnique({ where: { id: log.vehicleId } });
     if (vehicle && vehicle.status !== 'RETIRED') {
-      await tx.vehicle.update({
-        where: { id: log.vehicleId },
-        data: { status: 'AVAILABLE' },
-      });
+      await tx.vehicle.update({ where: { id: log.vehicleId }, data: { status: 'AVAILABLE' } });
     }
 
-    // 3. Log this maintenance cost as an Expense automatically
     await tx.expense.create({
       data: {
         amount: cost,
         category: 'MAINTENANCE_COST',
         description: `Maintenance Closed: ${description}`,
         vehicleId: log.vehicleId,
+        fleetManagerId,
       },
     });
 
@@ -105,23 +93,16 @@ const completeMaintenanceLog = async (id, data) => {
   });
 };
 
-const deleteMaintenanceLog = async (id) => {
-  const log = await getMaintenanceLogById(id);
-  
-  return prisma.$transaction(async (tx) => {
-    // Delete log
-    const deletedLog = await tx.maintenanceLog.delete({
-      where: { id },
-    });
+const deleteMaintenanceLog = async (id, fleetManagerId) => {
+  const log = await getMaintenanceLogById(id, fleetManagerId);
 
-    // If it was open, restore vehicle back to AVAILABLE
+  return prisma.$transaction(async (tx) => {
+    const deletedLog = await tx.maintenanceLog.delete({ where: { id } });
+
     if (!log.isClosed) {
       const vehicle = await tx.vehicle.findUnique({ where: { id: log.vehicleId } });
       if (vehicle && vehicle.status === 'IN_SHOP') {
-        await tx.vehicle.update({
-          where: { id: log.vehicleId },
-          data: { status: 'AVAILABLE' },
-        });
+        await tx.vehicle.update({ where: { id: log.vehicleId }, data: { status: 'AVAILABLE' } });
       }
     }
 
