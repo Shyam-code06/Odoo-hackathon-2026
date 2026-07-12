@@ -1,6 +1,7 @@
 import { USE_MOCK_DATA } from '@/config/api';
 import axiosInstance from './axiosInstance';
 import mockDrivers from '@/data/drivers.json';
+import { exportLocalData, downloadApiBlob } from '@/utils/exportUtils';
 
 /**
  * Fleet Drivers Operations Service
@@ -57,6 +58,26 @@ export const driverService = {
     }
     const response = await axiosInstance.delete(`/drivers/${id}`);
     return response.data;
+  },
+
+  /**
+   * Export driver records to a downloadable file.
+   * Mock mode: generates CSV/JSON locally in the browser.
+   * Production mode: streams the file from the backend API.
+   *
+   * @param {'csv'|'json'} format - Output format (default: 'csv')
+   * @returns {Promise<string>} - The downloaded filename
+   */
+  export: async (format = 'csv') => {
+    if (USE_MOCK_DATA) {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      return exportLocalData(mockDrivers, 'drivers', format);
+    }
+    const response = await axiosInstance.get('/drivers/export', {
+      params: { format },
+      responseType: 'blob',
+    });
+    return downloadApiBlob(response, 'drivers', format);
   },
 };
 

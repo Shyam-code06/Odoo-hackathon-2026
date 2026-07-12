@@ -1,6 +1,7 @@
 import { USE_MOCK_DATA } from '@/config/api';
 import axiosInstance from './axiosInstance';
 import mockAnalytics from '@/data/analytics.json';
+import { exportLocalData, downloadApiBlob } from '@/utils/exportUtils';
 
 /**
  * Analytics and Performance Reporting Service
