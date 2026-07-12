@@ -36,8 +36,25 @@ const logout = async (req, res, next) => {
   }
 };
 
+const register = async (req, res, next) => {
+  try {
+    const { email, password, name, role } = req.body;
+    if (!email || !password || !name) {
+      return res.status(400).json({ error: 'Email, password, and name are required.' });
+    }
+    const result = await authService.register(email, password, name, role);
+    return res.status(201).json(result);
+  } catch (err) {
+    if (err.message.includes('already registered')) {
+      return res.status(409).json({ error: err.message });
+    }
+    next(err);
+  }
+};
+
 module.exports = {
   login,
   getMe,
   logout,
+  register,
 };

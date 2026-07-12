@@ -9,6 +9,17 @@ const PORT = env.PORT || 3000;
 // Middleware to parse JSON requests
 app.use(express.json());
 
+// Enable CORS for frontend client
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 // Mount API routes
 app.use('/api', apiRouter);
 

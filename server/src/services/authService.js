@@ -59,7 +59,48 @@ const getMe = async (userId) => {
   return user;
 };
 
+const register = async (email, password, name, role) => {
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existingUser) {
+    throw new Error('Email already registered.');
+  }
+
+  const allowedRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCIAL_ANALYST', 'DRIVER'];
+  const userRole = role && allowedRoles.includes(role.toUpperCase()) ? role.toUpperCase() : 'DRIVER';
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      name,
+      role: userRole,
+    },
+  });
+
+  const token = jwt.sign(
+    { id: user.id, email: user.email, role: user.role, name: user.name },
+    env.JWT_SECRET || 'your_fallback_secret_key',
+    { expiresIn: '8h' }
+  );
+
+  return {
+    token,
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    },
+  };
+};
+
 module.exports = {
   login,
   getMe,
+  register,
 };
