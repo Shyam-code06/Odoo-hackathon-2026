@@ -14,10 +14,15 @@ client/out/
 
 server/dist/
 server/build/
+server/generated/
 
 # =========================
 # Environment variables
 # =========================
+.env
+.env.*
+!.env.example
+
 client/.env
 client/.env.*
 !client/.env.example
