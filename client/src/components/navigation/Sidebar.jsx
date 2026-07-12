@@ -17,7 +17,8 @@ import {
   ChevronDown,
   FileText,
   AreaChart,
-  Target
+  Target,
+  UserCog
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLayout } from '@/hooks/useLayout';
@@ -39,6 +40,7 @@ const iconMap = {
   FileText,
   AreaChart,
   Target,
+  UserCog,
 };
 
 export function Sidebar() {

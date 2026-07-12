@@ -6,7 +6,12 @@ import { Avatar } from '@/components/ui/Avatar';
 import { StatusChip } from '@/components/ui/StatusChip';
 import { Button } from '@/components/ui/Button';
 
+import { usePermission } from '@/hooks/usePermission';
+
 export function ActiveTrips({ trips = [], onView, onComplete, onCancel }) {
+  const { hasPermission } = usePermission();
+  const canDispatch = hasPermission('dispatch_trip');
+  
   if (trips.length === 0) {
     return (
       <div className="bg-white border border-slate-200/80 rounded-2xl p-12 text-center shadow-premium-sm select-none">
@@ -99,24 +104,28 @@ export function ActiveTrips({ trips = [], onView, onComplete, onCancel }) {
                 >
                   Inspect details
                 </Button>
-                <Button
-                  variant="outline"
-                  size="xs"
-                  className="px-2.5 h-7 py-1 text-[9px] font-bold text-brand-danger border-rose-200/60 hover:bg-rose-50"
-                  leftIcon={XCircle}
-                  onClick={() => onCancel(trip)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  size="xs"
-                  className="px-2.5 h-7 py-1 text-[9px] font-bold"
-                  leftIcon={CheckCircle2}
-                  onClick={() => onComplete(trip)}
-                >
-                  Deliver
-                </Button>
+                {canDispatch && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="xs"
+                      className="px-2.5 h-7 py-1 text-[9px] font-bold text-brand-danger border-rose-200/60 hover:bg-rose-50"
+                      leftIcon={XCircle}
+                      onClick={() => onCancel(trip)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="xs"
+                      className="px-2.5 h-7 py-1 text-[9px] font-bold"
+                      leftIcon={CheckCircle2}
+                      onClick={() => onComplete(trip)}
+                    >
+                      Deliver
+                    </Button>
+                  </>
+                )}
               </div>
             </Card>
           </motion.div>

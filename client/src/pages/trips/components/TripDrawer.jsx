@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/Button';
 import { StatusChip } from '@/components/ui/StatusChip';
 import { Avatar } from '@/components/ui/Avatar';
 import { TripTimeline } from './TripTimeline';
+import { usePermission } from '@/hooks/usePermission';
 
 export function TripDrawer({ item, onComplete, onCancel }) {
+  const { hasPermission } = usePermission();
+  const canDispatch = hasPermission('dispatch_trip');
   const isActive = item.status === 'in_transit' || item.status === 'dispatched';
 
   // Sample expenses for this trip
@@ -143,7 +146,7 @@ export function TripDrawer({ item, onComplete, onCancel }) {
       </div>
 
       {/* 7. Action Button Deck */}
-      {isActive && (
+      {isActive && canDispatch && (
         <div className="flex items-center gap-3 pt-4 border-t border-subtle">
           <Button
             variant="outline"

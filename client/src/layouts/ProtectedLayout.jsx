@@ -11,7 +11,8 @@ import {
   DollarSign, 
   BarChart3, 
   Settings, 
-  LogOut
+  LogOut,
+  UserCog
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLayout } from '@/hooks/useLayout';
@@ -31,6 +32,7 @@ const iconMap = {
   DollarSign,
   BarChart3,
   Settings,
+  UserCog,
 };
 
 export function ProtectedLayout() {

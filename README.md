@@ -33,7 +33,7 @@ TransitOps solves these inefficiencies by providing a centralized command center
 *   🚦 **Automatic State Transitions**: Trip dispatching, completion, and cancellation dynamically adjust vehicle and driver availability indicators.
 
 ---
-
+## Fleet Manager ID :admin@transitops.com  password : admin123
 ## 🛠️ Tech Stack
 
 | Component | Technology | Description |

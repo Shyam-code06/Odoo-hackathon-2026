@@ -23,6 +23,8 @@ import { Modal, ConfirmationDialog } from '@/components/ui/Modal';
 import { StatCard } from '@/components/ui/Card';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@/components/ui/Dropdown';
 import { cn } from '@/utils';
+import PermissionGate from '@/components/common/PermissionGate';
+import { usePermission } from '@/hooks/usePermission';
 
 export function CrudPage({
   service,
@@ -38,6 +40,64 @@ export function CrudPage({
   searchKeys = [], // ['name', 'plateNumber']
   className,
 }) {
+  const { hasPermission } = usePermission();
+
+  const getCrudPermissions = (titleStr) => {
+    const t = titleStr.toLowerCase();
+    if (t.includes('vehicle')) {
+      return {
+        create: 'create_vehicle',
+        edit: 'edit_vehicle',
+        delete: 'delete_vehicle',
+        export: 'export_data',
+      };
+    }
+    if (t.includes('driver')) {
+      return {
+        create: 'create_driver',
+        edit: 'edit_driver',
+        delete: 'delete_driver',
+        export: 'export_data',
+      };
+    }
+    if (t.includes('maintenance')) {
+      return {
+        create: 'manage_maintenance',
+        edit: 'manage_maintenance',
+        delete: 'manage_maintenance',
+        export: 'export_data',
+      };
+    }
+    if (t.includes('fuel')) {
+      return {
+        create: 'manage_finance',
+        edit: 'manage_finance',
+        delete: 'manage_finance',
+        export: 'export_data',
+      };
+    }
+    if (t.includes('expense')) {
+      return {
+        create: 'manage_finance',
+        edit: 'manage_finance',
+        delete: 'manage_finance',
+        export: 'export_data',
+      };
+    }
+    return {
+      create: null,
+      edit: null,
+      delete: null,
+      export: null,
+    };
+  };
+
+  const perms = getCrudPermissions(title);
+  const canCreate = !perms.create || hasPermission(perms.create);
+  const canEdit = !perms.edit || hasPermission(perms.edit);
+  const canDelete = !perms.delete || hasPermission(perms.delete);
+  const canExport = !perms.export || hasPermission(perms.export);
+
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -257,13 +317,19 @@ export function CrudPage({
             <DropdownItem icon={Eye} onClick={() => setDetailItem(row)}>
               Inspect details
             </DropdownItem>
-            <DropdownItem icon={Edit2} onClick={() => handleEditClick(row)}>
-              Edit Record
-            </DropdownItem>
-            <div className="border-t border-subtle my-1" />
-            <DropdownItem icon={Trash2} variant="danger" onClick={() => handleDeleteClick(row)}>
-              Delete Record
-            </DropdownItem>
+            {canEdit && (
+              <DropdownItem icon={Edit2} onClick={() => handleEditClick(row)}>
+                Edit Record
+              </DropdownItem>
+            )}
+            {canDelete && (
+              <>
+                <div className="border-t border-subtle my-1" />
+                <DropdownItem icon={Trash2} variant="danger" onClick={() => handleDeleteClick(row)}>
+                  Delete Record
+                </DropdownItem>
+              </>
+            )}
           </DropdownMenu>
         </Dropdown>
       ),
@@ -341,24 +407,28 @@ export function CrudPage({
             Sync
           </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            leftIcon={Download}
-            isLoading={isExporting}
-            onClick={handleExport}
-          >
-            Export
-          </Button>
+          {canExport && (
+            <Button
+              variant="outline"
+              size="sm"
+              leftIcon={Download}
+              isLoading={isExporting}
+              onClick={handleExport}
+            >
+              Export
+            </Button>
+          )}
 
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleOpenCreate}
-            leftIcon={Plus}
-          >
-            Add Record
-          </Button>
+          {canCreate && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleOpenCreate}
+              leftIcon={Plus}
+            >
+              Add Record
+            </Button>
+          )}
         </div>
       </div>
 
@@ -371,7 +441,7 @@ export function CrudPage({
           sortKey={sortKey}
           sortDirection={sortDirection}
           onSort={handleSort}
-          selectable
+          selectable={canDelete}
           selectedRowIds={selectedRowIds}
           onSelectRowIds={setSelectedRowIds}
           emptyTitle={`No ${title.toLowerCase()} items found`}
@@ -384,7 +454,7 @@ export function CrudPage({
             onPageChange: setPage,
             onRowsPerPageChange: setRowsPerPage,
           }}
-          bulkActions={[
+          bulkActions={canDelete ? [
             {
               label: 'Delete Selected',
               variant: 'danger',
@@ -399,7 +469,7 @@ export function CrudPage({
                 }
               },
             },
-          ]}
+          ] : undefined}
         />
       </div>
 

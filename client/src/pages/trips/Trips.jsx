@@ -9,6 +9,7 @@ import { Select } from '@/components/ui/Select';
 import { Drawer } from '@/components/ui/Drawer';
 import { ConfirmationDialog } from '@/components/ui/Modal';
 import { tripService } from '@/services/tripService';
+import { usePermission } from '@/hooks/usePermission';
 
 // Subcomponents
 import { TripWizard } from './components/TripWizard';
@@ -17,6 +18,7 @@ import { CompletedTrips } from './components/CompletedTrips';
 import { TripDrawer } from './components/TripDrawer';
 
 export function Trips() {
+  const { hasPermission } = usePermission();
   const [trips, setTrips] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -172,14 +174,16 @@ export function Trips() {
             <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Active Trips & Dispatch Center</h1>
             <p className="text-sm text-slate-500 mt-1">Plan, dispatch, and track active route shipments across your operations network.</p>
           </div>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={() => setIsWizardOpen(true)}
-            leftIcon={Plus}
-          >
-            New Trip Dispatch
-          </Button>
+          {hasPermission('create_trip') && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setIsWizardOpen(true)}
+              leftIcon={Plus}
+            >
+              New Trip Dispatch
+            </Button>
+          )}
         </div>
 
         {/* 1. Statistics Cards */}
@@ -192,31 +196,35 @@ export function Trips() {
 
         {/* 2. Quick Actions Shortcuts */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div
-            onClick={() => setIsWizardOpen(true)}
-            className="p-4.5 border border-slate-200/80 rounded-2xl bg-white shadow-premium-sm hover:border-blue-300 hover:shadow-[0_0_12px_rgba(59,130,246,0.06)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-4 text-left"
-          >
-            <div className="p-3 bg-blue-50 text-blue-500 rounded-xl">
-              <Plus className="w-5 h-5" />
+          {hasPermission('create_trip') && (
+            <div
+              onClick={() => setIsWizardOpen(true)}
+              className="p-4.5 border border-slate-200/80 rounded-2xl bg-white shadow-premium-sm hover:border-blue-300 hover:shadow-[0_0_12px_rgba(59,130,246,0.06)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-4 text-left"
+            >
+              <div className="p-3 bg-blue-50 text-blue-500 rounded-xl">
+                <Plus className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-800">Dispatch Wizard</h4>
+                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Multi-step consignment planner.</p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800">Dispatch Wizard</h4>
-              <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Multi-step consignment planner.</p>
-            </div>
-          </div>
+          )}
 
-          <div
-            onClick={() => alert('Generating active route mapping logs...')}
-            className="p-4.5 border border-slate-200/80 rounded-2xl bg-white shadow-premium-sm hover:border-blue-300 hover:shadow-[0_0_12px_rgba(59,130,246,0.06)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-4 text-left"
-          >
-            <div className="p-3 bg-blue-50 text-blue-500 rounded-xl">
-              <Compass className="w-5 h-5" />
+          {hasPermission('export_data') && (
+            <div
+              onClick={() => alert('Generating active route mapping logs...')}
+              className="p-4.5 border border-slate-200/80 rounded-2xl bg-white shadow-premium-sm hover:border-blue-300 hover:shadow-[0_0_12px_rgba(59,130,246,0.06)] cursor-pointer transition-all duration-200 hover:-translate-y-0.5 flex items-center gap-4 text-left"
+            >
+              <div className="p-3 bg-blue-50 text-blue-500 rounded-xl">
+                <Compass className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-slate-800">Dispatch Report</h4>
+                <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Download active route logs.</p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-bold text-slate-800">Dispatch Report</h4>
-              <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Download active route logs.</p>
-            </div>
-          </div>
+          )}
 
           <div
             onClick={() => fetchTrips(true)}
