@@ -1,0 +1,9 @@
+{
+  "stats": {
+    "totalActiveVehicles": 0,
+    "activeDrivers": 0,
+    "tripsInTransit": 0,
+    "pendingMaintenance": 0
+  },
+  "recentTrips": []
+}
