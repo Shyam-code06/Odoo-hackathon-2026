@@ -1,0 +1,105 @@
+# =========================
+# Dependencies
+# =========================
+client/node_modules/
+server/node_modules/
+
+# =========================
+# Build outputs
+# =========================
+client/build/
+client/dist/
+client/.next/
+client/out/
+
+server/dist/
+server/build/
+
+# =========================
+# Environment variables
+# =========================
+client/.env
+client/.env.*
+!client/.env.example
+
+server/.env
+server/.env.*
+!server/.env.example
+
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================
+# Cache
+# =========================
+client/.cache/
+client/.parcel-cache/
+client/.vite/
+server/.cache/
+
+# =========================
+# Coverage
+# =========================
+coverage/
+client/coverage/
+server/coverage/
+
+# =========================
+# IDE & Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Desktop.ini
+Thumbs.db
+
+# =========================
+# Temporary files
+# =========================
+tmp/
+temp/
+*.tmp
+
+# =========================
+# Runtime files
+# =========================
+*.pid
+*.seed
+*.pid.lock
+
+# =========================
+# TypeScript
+# =========================
+*.tsbuildinfo
+
+# =========================
+# Package manager
+# =========================
+.pnpm-store/
+.npm/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# =========================
+# Misc
+# =========================
+.vercel/
+.netlify/
+firebase-debug.log
