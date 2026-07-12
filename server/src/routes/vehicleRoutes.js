@@ -12,6 +12,7 @@ const allAdminRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCI
 router.get('/', requireRole(allAdminRoles), vehicleController.getVehicles);
 router.get('/available', requireRole(allAdminRoles), vehicleController.getAvailableVehicles);
 router.get('/statistics', requireRole(allAdminRoles), vehicleController.getStatistics);
+router.get('/export', requireRole(allAdminRoles), vehicleController.exportCSV);
 router.get('/:id', requireRole(allAdminRoles), vehicleController.getVehicleById);
 
 // Write/Edit access restricted to Fleet Managers only

@@ -7,7 +7,8 @@ router.use(authenticateJWT);
 
 const allAdminRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCIAL_ANALYST'];
 
-router.get('/', requireRole(allAdminRoles), maintenanceController.getMaintenanceLogs);
+router.get('/', requireRole(allAdminRoles), maintenanceController.getMainMaintenanceLogs || maintenanceController.getMaintenanceLogs);
+router.get('/export', requireRole(allAdminRoles), maintenanceController.exportCSV);
 router.get('/:id', requireRole(allAdminRoles), maintenanceController.getMaintenanceLogById);
 
 router.post('/', requireRole(['FLEET_MANAGER']), maintenanceController.createMaintenanceLog);

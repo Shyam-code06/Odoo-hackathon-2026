@@ -7,6 +7,7 @@ import { PageLoader } from '@/components/ui/Loader';
 
 // ── Eagerly loaded (critical path) ─────────────────────────────────────────
 import Login from '@/pages/auth/Login';
+import Register from '@/pages/auth/Register';
 import Dashboard from '@/pages/dashboard/Dashboard';
 
 // ── Lazy loaded (route-based code splitting) ────────────────────────────────
@@ -49,6 +50,7 @@ export function AppRoutes() {
       {/* ── Public Routes ────────────────────────────────────── */}
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
         <Route path="/500"   element={<SuspenseRoute><ServerError /></SuspenseRoute>} />
         <Route path="/network-error" element={<SuspenseRoute><NetworkError /></SuspenseRoute>} />
       </Route>

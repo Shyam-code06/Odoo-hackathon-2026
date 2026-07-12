@@ -119,6 +119,31 @@ const deleteTrip = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const trips = await tripService.getTrips(req.query);
+    const headers = ['Trip Number', 'Source', 'Destination', 'Cargo Weight (kg)', 'Planned Distance (km)', 'Actual Distance (km)', 'Status', 'Revenue ($)', 'Dispatch Time', 'Completion Time'];
+    const rows = trips.map(t => [
+      t.tripNumber,
+      `"${t.source.replace(/"/g, '""')}"`,
+      `"${t.destination.replace(/"/g, '""')}"`,
+      t.cargoWeight,
+      t.plannedDistance,
+      t.actualDistance || '',
+      t.status,
+      t.revenue || '',
+      t.dispatchTime ? t.dispatchTime.toISOString() : '',
+      t.completionTime ? t.completionTime.toISOString() : ''
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="trips_export.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getTrips,
   getTripById,
@@ -128,4 +153,5 @@ module.exports = {
   completeTrip,
   cancelTrip,
   deleteTrip,
+  exportCSV,
 };

@@ -289,6 +289,17 @@ export function Login() {
           </p>
         </div>
 
+        <div className="mt-6 text-center text-xs text-slate-500">
+          Don't have an account?{' '}
+          <button
+            type="button"
+            onClick={() => navigate('/signup')}
+            className="font-semibold text-brand-primary hover:text-blue-700 transition-colors cursor-pointer"
+          >
+            Create an Account
+          </button>
+        </div>
+
         <p className="text-center text-xs text-slate-400 mt-6">
           © {new Date().getFullYear()} TransitOps · Enterprise Fleet Platform
         </p>

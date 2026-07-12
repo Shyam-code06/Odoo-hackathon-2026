@@ -9,6 +9,7 @@ const allAdminRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCI
 const writeRoles = ['FLEET_MANAGER', 'DISPATCHER', 'FINANCIAL_ANALYST'];
 
 router.get('/', requireRole(allAdminRoles), expenseController.getExpenses);
+router.get('/export', requireRole(allAdminRoles), expenseController.exportCSV);
 router.get('/:id', requireRole(allAdminRoles), expenseController.getExpenseById);
 
 router.post('/', requireRole(writeRoles), expenseController.createExpense);

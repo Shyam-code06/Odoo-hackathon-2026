@@ -85,6 +85,28 @@ const deleteDriver = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const drivers = await driverService.getDrivers(req.query);
+    const headers = ['Name', 'License Number', 'License Category', 'License Expiry Date', 'Contact Number', 'Safety Score', 'Status'];
+    const rows = drivers.map(d => [
+      `"${d.name.replace(/"/g, '""')}"`,
+      d.licenseNumber,
+      d.licenseCategory,
+      d.licenseExpiryDate ? d.licenseExpiryDate.toISOString().slice(0, 10) : '',
+      d.contactNumber,
+      d.safetyScore,
+      d.status
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="drivers_export.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getDrivers,
   getAvailableDrivers,
@@ -93,4 +115,5 @@ module.exports = {
   createDriver,
   updateDriver,
   deleteDriver,
+  exportCSV,
 };

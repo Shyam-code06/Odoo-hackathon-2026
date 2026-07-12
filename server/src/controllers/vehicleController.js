@@ -85,6 +85,29 @@ const getStatistics = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const vehicles = await vehicleService.getVehicles(req.query);
+    const headers = ['Registration Number', 'Model', 'Type', 'Max Load Capacity (kg)', 'Odometer (km)', 'Acquisition Cost ($)', 'Status', 'Region'];
+    const rows = vehicles.map(v => [
+      v.registrationNumber,
+      `"${v.model.replace(/"/g, '""')}"`,
+      v.type,
+      v.maxLoadCapacity,
+      v.odometer,
+      v.acquisitionCost,
+      v.status,
+      v.region
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="vehicles_export.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getVehicles,
   getAvailableVehicles,
@@ -93,4 +116,5 @@ module.exports = {
   updateVehicle,
   deleteVehicle,
   getStatistics,
+  exportCSV,
 };

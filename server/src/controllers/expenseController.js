@@ -61,10 +61,31 @@ const deleteExpense = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const expenses = await expenseService.getExpenses(req.query);
+    const headers = ['Vehicle Registration', 'Amount ($)', 'Category', 'Date', 'Description'];
+    const rows = expenses.map(e => [
+      e.vehicle ? e.vehicle.registrationNumber : '',
+      e.amount,
+      e.category,
+      e.date ? e.date.toISOString().slice(0, 10) : '',
+      `"${(e.description || '').replace(/"/g, '""')}"`
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="expenses_export.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getExpenses,
   getExpenseById,
   createExpense,
   updateExpense,
   deleteExpense,
+  exportCSV,
 };

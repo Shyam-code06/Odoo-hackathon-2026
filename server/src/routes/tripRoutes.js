@@ -9,6 +9,7 @@ const allAdminRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCI
 const dispatchRoles = ['FLEET_MANAGER', 'DISPATCHER'];
 
 router.get('/', requireRole(allAdminRoles), tripController.getTrips);
+router.get('/export', requireRole(allAdminRoles), tripController.exportCSV);
 router.get('/:id', requireRole(allAdminRoles), tripController.getTripById);
 
 // Manage trip lifecycle

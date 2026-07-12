@@ -61,10 +61,31 @@ const deleteFuelLog = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const logs = await fuelService.getFuelLogs(req.query);
+    const headers = ['Vehicle Registration', 'Volume (Liters)', 'Cost ($)', 'Date', 'Odometer'];
+    const rows = logs.map(f => [
+      f.vehicle ? f.vehicle.registrationNumber : '',
+      f.liters,
+      f.cost,
+      f.date ? f.date.toISOString().slice(0, 10) : '',
+      f.odometer
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="fuel_export.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getFuelLogs,
   getFuelLogById,
   createFuelLog,
   updateFuelLog,
   deleteFuelLog,
+  exportCSV,
 };

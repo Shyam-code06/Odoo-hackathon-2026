@@ -9,6 +9,7 @@ const allAdminRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCI
 const writeRoles = ['FLEET_MANAGER', 'DISPATCHER', 'FINANCIAL_ANALYST'];
 
 router.get('/', requireRole(allAdminRoles), fuelController.getFuelLogs);
+router.get('/export', requireRole(allAdminRoles), fuelController.exportCSV);
 router.get('/:id', requireRole(allAdminRoles), fuelController.getFuelLogById);
 
 router.post('/', requireRole(writeRoles), fuelController.createFuelLog);

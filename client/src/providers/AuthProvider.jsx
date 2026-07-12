@@ -100,6 +100,29 @@ export function AuthProvider({ children }) {
   }, []);
 
   /**
+   * Register a new user in the workspace.
+   */
+  const register = useCallback(async (name, email, password, role) => {
+    setLoading(true);
+    try {
+      const response = await authService.register({ name, email, password, role });
+      const { user: registeredUser, token } = response;
+
+      setUser(registeredUser);
+      setIsAuthenticated(true);
+
+      localStorage.setItem('transitops_auth_token', token);
+      localStorage.setItem('transitops_user', JSON.stringify(registeredUser));
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message || 'Registration failed.' };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  /**
    * Role-Based Access Control utility.
    * Checks if current user possesses any of the required credentials.
    */
@@ -115,6 +138,7 @@ export function AuthProvider({ children }) {
     isAuthenticated,
     loading,
     login,
+    register,
     logout,
     hasRole,
   };

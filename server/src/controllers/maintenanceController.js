@@ -67,10 +67,32 @@ const deleteMaintenanceLog = async (req, res, next) => {
   }
 };
 
+const exportCSV = async (req, res, next) => {
+  try {
+    const logs = await maintenanceService.getMaintenanceLogs(req.query);
+    const headers = ['Vehicle Registration', 'Description', 'Cost ($)', 'Start Date', 'End Date', 'Closed'];
+    const rows = logs.map(m => [
+      m.vehicle ? m.vehicle.registrationNumber : '',
+      `"${(m.description || '').replace(/"/g, '""')}"`,
+      m.cost || 0,
+      m.startDate ? m.startDate.toISOString().slice(0, 10) : '',
+      m.endDate ? m.endDate.toISOString().slice(0, 10) : '',
+      m.isClosed ? 'Yes' : 'No'
+    ]);
+    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="maintenance_export.csv"');
+    return res.status(200).send(csvContent);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getMaintenanceLogs,
   getMaintenanceLogById,
   createMaintenanceLog,
   completeMaintenanceLog,
   deleteMaintenanceLog,
+  exportCSV,
 };

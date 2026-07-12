@@ -10,6 +10,7 @@ const allAdminRoles = ['FLEET_MANAGER', 'DISPATCHER', 'SAFETY_OFFICER', 'FINANCI
 router.get('/', requireRole(allAdminRoles), driverController.getDrivers);
 router.get('/available', requireRole(allAdminRoles), driverController.getAvailableDrivers);
 router.get('/license-expiring', requireRole(allAdminRoles), driverController.getLicenseExpiringDrivers);
+router.get('/export', requireRole(allAdminRoles), driverController.exportCSV);
 router.get('/:id', requireRole(allAdminRoles), driverController.getDriverById);
 
 // Create, Update, Delete restricted to Fleet Manager and Safety Officer
