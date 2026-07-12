@@ -1,1 +1,54 @@
-[]
+[
+  {
+    "id": "vh-1",
+    "plateNumber": "TX-3902",
+    "make": "Volvo",
+    "model": "FH16 Globetrotter",
+    "year": 2023,
+    "type": "Heavy Duty Truck",
+    "status": "on_trip",
+    "healthScore": 94,
+    "odometer": 142400,
+    "fuelType": "Diesel",
+    "lastMaintenance": "2026-07-11"
+  },
+  {
+    "id": "vh-2",
+    "plateNumber": "TX-1182",
+    "make": "Ford",
+    "model": "Transit Cargo Van",
+    "year": 2022,
+    "type": "Light Cargo Van",
+    "status": "available",
+    "healthScore": 88,
+    "odometer": 68200,
+    "fuelType": "Gasoline",
+    "lastMaintenance": "2026-07-09"
+  },
+  {
+    "id": "vh-3",
+    "plateNumber": "TX-5509",
+    "make": "Scania",
+    "model": "R500 V8 Streamline",
+    "year": 2021,
+    "type": "Heavy Duty Truck",
+    "status": "maintenance",
+    "healthScore": 72,
+    "odometer": 210500,
+    "fuelType": "Diesel",
+    "lastMaintenance": "2026-06-24"
+  },
+  {
+    "id": "vh-4",
+    "plateNumber": "TX-9923",
+    "make": "Freightliner",
+    "model": "Cascadia",
+    "year": 2024,
+    "type": "Flatbed Trailer",
+    "status": "available",
+    "healthScore": 96,
+    "odometer": 24000,
+    "fuelType": "Diesel",
+    "lastMaintenance": "2026-07-01"
+  }
+]

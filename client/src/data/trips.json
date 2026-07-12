@@ -1,1 +1,54 @@
-[]
+[
+  {
+    "id": "trp-1",
+    "tripNumber": "TRP-9901",
+    "vehiclePlate": "TX-3902",
+    "vehicleName": "Volvo FH16",
+    "driverName": "Carlos Santana",
+    "origin": "Dallas, TX",
+    "destination": "Houston, TX",
+    "distance": 240,
+    "status": "completed",
+    "startedAt": "2026-07-10T08:00:00Z",
+    "completedAt": "2026-07-10T12:30:00Z"
+  },
+  {
+    "id": "trp-2",
+    "tripNumber": "TRP-9902",
+    "vehiclePlate": "TX-3902",
+    "vehicleName": "Volvo FH16",
+    "driverName": "Carlos Santana",
+    "origin": "Austin, TX",
+    "destination": "San Antonio, TX",
+    "distance": 80,
+    "status": "in_transit",
+    "startedAt": "2026-07-12T09:00:00Z",
+    "completedAt": null
+  },
+  {
+    "id": "trp-3",
+    "tripNumber": "TRP-9903",
+    "vehiclePlate": "TX-1182",
+    "vehicleName": "Ford Transit",
+    "driverName": "Marcus Aurelius",
+    "origin": "Fort Worth, TX",
+    "destination": "Dallas, TX",
+    "distance": 32,
+    "status": "pending",
+    "startedAt": null,
+    "completedAt": null
+  },
+  {
+    "id": "trp-4",
+    "tripNumber": "TRP-9904",
+    "vehiclePlate": "TX-5509",
+    "vehicleName": "Scania R500",
+    "driverName": "Serena Williams",
+    "origin": "El Paso, TX",
+    "destination": "Austin, TX",
+    "distance": 570,
+    "status": "delayed",
+    "startedAt": "2026-07-11T22:00:00Z",
+    "completedAt": null
+  }
+]

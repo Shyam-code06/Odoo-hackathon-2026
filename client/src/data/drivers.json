@@ -1,1 +1,35 @@
-[]
+[
+  {
+    "id": "dr-1",
+    "name": "Carlos Santana",
+    "email": "carlos.s@transitops.com",
+    "phone": "+1 (555) 349-2091",
+    "licenseNumber": "CDL-99823-TX",
+    "licenseExpiry": "2028-09-12",
+    "safetyScore": 98,
+    "status": "available",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150"
+  },
+  {
+    "id": "dr-2",
+    "name": "Marcus Aurelius",
+    "email": "marcus.a@transitops.com",
+    "phone": "+1 (555) 998-1123",
+    "licenseNumber": "CDL-11283-TX",
+    "licenseExpiry": "2027-04-18",
+    "safetyScore": 94,
+    "status": "on_trip",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150"
+  },
+  {
+    "id": "dr-3",
+    "name": "Serena Williams",
+    "email": "serena.w@transitops.com",
+    "phone": "+1 (555) 243-9908",
+    "licenseNumber": "CDL-44921-TX",
+    "licenseExpiry": "2026-08-01",
+    "safetyScore": 88,
+    "status": "maintenance",
+    "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150"
+  }
+]

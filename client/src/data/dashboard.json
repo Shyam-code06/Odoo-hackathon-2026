@@ -1,9 +1,70 @@
 {
   "stats": {
-    "totalActiveVehicles": 0,
-    "activeDrivers": 0,
-    "tripsInTransit": 0,
-    "pendingMaintenance": 0
+    "activeVehicles": { "value": 34, "trend": 5.2, "status": "up" },
+    "availableVehicles": { "value": 12, "trend": 1.5, "status": "up" },
+    "vehiclesInShop": { "value": 5, "trend": -2.0, "status": "down" },
+    "retiredVehicles": { "value": 2, "trend": 0, "status": "neutral" },
+    "driversOnDuty": { "value": 28, "trend": 8.4, "status": "up" },
+    "driversAvailable": { "value": 14, "trend": -1.2, "status": "down" },
+    "activeTrips": { "value": 18, "trend": 12.5, "status": "up" },
+    "pendingTrips": { "value": 6, "trend": -4.0, "status": "down" },
+    "fleetUtilization": { "value": 87.5, "trend": 2.1, "status": "up" },
+    "monthlyFuelCost": { "value": 24890, "trend": 6.8, "status": "up" },
+    "maintenanceCost": { "value": 12450, "trend": -1.2, "status": "down" },
+    "operationalCost": { "value": 41200, "trend": 4.5, "status": "up" }
   },
-  "recentTrips": []
+  "vehicleDistribution": [
+    { "name": "Heavy Trucks", "value": 15, "color": "#3B82F6" },
+    { "name": "Cargo Vans", "value": 10, "color": "#8B5CF6" },
+    { "name": "Sedans & Cars", "value": 8, "color": "#10B981" },
+    { "name": "Flatbeds", "value": 5, "color": "#F59E0B" }
+  ],
+  "tripOverview": [
+    { "name": "Jan", "completed": 95, "pending": 12, "active": 8, "cancelled": 2 },
+    { "name": "Feb", "completed": 105, "pending": 14, "active": 12, "cancelled": 4 },
+    { "name": "Mar", "completed": 115, "pending": 10, "active": 15, "cancelled": 3 },
+    { "name": "Apr", "completed": 125, "pending": 18, "active": 14, "cancelled": 5 },
+    { "name": "May", "completed": 140, "pending": 16, "active": 18, "cancelled": 2 },
+    { "name": "Jun", "completed": 145, "pending": 6, "active": 18, "cancelled": 2 }
+  ],
+  "fuelAnalytics": [
+    { "name": "Jan", "cost": 18400, "consumption": 4800, "efficiency": 8.5 },
+    { "name": "Feb", "cost": 19500, "consumption": 5100, "efficiency": 8.4 },
+    { "name": "Mar", "cost": 21000, "consumption": 5400, "efficiency": 8.6 },
+    { "name": "Apr", "cost": 22200, "consumption": 5600, "efficiency": 8.7 },
+    { "name": "May", "cost": 23900, "consumption": 5900, "efficiency": 8.8 },
+    { "name": "Jun", "cost": 24890, "consumption": 6100, "efficiency": 8.9 }
+  ],
+  "expenseOverview": [
+    { "name": "Fuel Registry", "value": 24890, "color": "#3B82F6" },
+    { "name": "Scheduled Maintenance", "value": 12450, "color": "#EF4444" },
+    { "name": "Emergency Repairs", "value": 8200, "color": "#F59E0B" },
+    { "name": "Road Tolls", "value": 4200, "color": "#10B981" }
+  ],
+  "recentMaintenance": [
+    { "id": "m-1", "vehicle": "TX-3902 (Volvo FH)", "type": "Engine Tune-up", "cost": 850.0, "status": "completed", "date": "Jul 11, 2026" },
+    { "id": "m-2", "vehicle": "TX-1182 (Ford Transit)", "type": "Brake Replacement", "cost": 420.0, "status": "completed", "date": "Jul 09, 2026" },
+    { "id": "m-3", "vehicle": "TX-5509 (Scania R500)", "type": "Tire Rotation", "cost": 280.0, "status": "pending", "date": "Jul 15, 2026" }
+  ],
+  "activityTimeline": [
+    { "id": "act-1", "type": "trip_created", "title": "Trip Dispatch TRP-9902", "description": "Created and assigned to Carlos Santana (Truck TX-3902)", "time": "12 mins ago" },
+    { "id": "act-2", "type": "maintenance_started", "title": "Maintenance Logged", "description": "Scheduled engine tuning started for Volvo FH TX-3902", "time": "1 hour ago" },
+    { "id": "act-3", "type": "fuel_added", "title": "Fuel Registry Refill", "description": "Carlos Santana added 85 gallons ($340.00) at Shell Station", "time": "3 hours ago" },
+    { "id": "act-4", "type": "driver_registered", "title": "New Driver Onboarded", "description": "Financial and safety clearance verified for David Miller", "time": "5 hours ago" }
+  ],
+  "driverStatuses": [
+    { "id": "dr-1", "name": "Carlos Santana", "score": 98, "status": "available", "expiry": "2028-09-12", "availability": "Active" },
+    { "id": "dr-2", "name": "Marcus Aurelius", "score": 94, "status": "on_trip", "expiry": "2027-04-18", "availability": "On Trip" },
+    { "id": "dr-3", "name": "Serena Williams", "score": 88, "status": "maintenance", "expiry": "2026-08-01", "availability": "Resting" }
+  ],
+  "vehicleStatuses": [
+    { "id": "vh-1", "name": "Volvo FH16 (TX-3902)", "status": "active", "health": 94, "odometer": "142,400 mi", "lastMaintenance": "Jul 11, 2026" },
+    { "id": "vh-2", "name": "Ford Transit (TX-1182)", "status": "available", "health": 88, "odometer": "68,200 mi", "lastMaintenance": "Jul 09, 2026" },
+    { "id": "vh-3", "name": "Scania R500 (TX-5509)", "status": "maintenance", "health": 72, "odometer": "210,500 mi", "lastMaintenance": "Jun 24, 2026" }
+  ],
+  "smartAlerts": [
+    { "id": "al-1", "type": "danger", "title": "Driver License Expiration", "description": "Serena CDL license expires in 20 days. Renewal audit required." },
+    { "id": "al-2", "type": "warning", "title": "Vehicle Service Overdue", "description": "Scania (TX-5509) is 1,200 miles past filter service." },
+    { "id": "al-3", "type": "info", "title": "Fuel Price Surcharge", "description": "Regional terminal average fuel rate increased by 4.2%." }
+  ]
 }
